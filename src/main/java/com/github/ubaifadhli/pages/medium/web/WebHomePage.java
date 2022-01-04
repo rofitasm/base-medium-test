@@ -4,6 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class WebHomePage {
     private WebDriver webDriver;
@@ -37,8 +39,13 @@ public class WebHomePage {
     }
 
     public void goToTwitterLoginPage() {
-        webDriver.findElement(SIGN_IN_BUTTON).click();
-        webDriver.findElement(SIGN_IN_WITH_TWITTER).click();
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
+
+        WebElement signInButton = wait.until(ExpectedConditions.elementToBeClickable(SIGN_IN_BUTTON));
+        signInButton.click();
+
+        WebElement signInWithTwitterButton = wait.until(ExpectedConditions.elementToBeClickable(SIGN_IN_WITH_TWITTER));
+        signInWithTwitterButton.click();
     }
 
 

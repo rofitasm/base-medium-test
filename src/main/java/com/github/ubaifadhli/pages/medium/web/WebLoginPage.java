@@ -2,6 +2,9 @@ package com.github.ubaifadhli.pages.medium.web;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class WebLoginPage {
     private WebDriver webDriver;
@@ -17,9 +20,15 @@ public class WebLoginPage {
     }
 
     public void fillTwitterLoginCredentials(String email, String password) {
-        webDriver.findElement(TWITTER_USERNAME_FIELD).sendKeys(email);
-        webDriver.findElement(TWITTER_PASSWORD_FIELD).sendKeys(password);
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
+        
+        WebElement twitterUsernameField = wait.until(ExpectedConditions.visibilityOfElementLocated(TWITTER_USERNAME_FIELD));
+        twitterUsernameField.sendKeys(email);
 
-        webDriver.findElement(TWITTER_SIGN_IN_BUTTON).click();
+        WebElement twitterPasswordField = wait.until(ExpectedConditions.visibilityOfElementLocated(TWITTER_PASSWORD_FIELD));
+        twitterPasswordField.sendKeys(password);
+
+        WebElement twitterSignInButton = wait.until(ExpectedConditions.elementToBeClickable(TWITTER_SIGN_IN_BUTTON));
+        twitterSignInButton.click();
     }
 }

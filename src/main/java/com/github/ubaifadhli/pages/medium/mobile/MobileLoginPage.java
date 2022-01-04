@@ -4,6 +4,7 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileBy;
 import io.appium.java_client.MobileElement;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -22,14 +23,20 @@ public class MobileLoginPage {
     }
 
     public void fillTwitterLoginCredentials(String email, String password) {
-        appiumDriver.findElement(MOBILE_TWITTER_WEB_VIEW).click();
-
-        appiumDriver.findElement(TWITTER_USERNAME_FIELD).sendKeys(email);
-        appiumDriver.findElement(TWITTER_PASSWORD_FIELD).sendKeys(password);
-
-        appiumDriver.findElement(TWITTER_SIGN_IN_BUTTON).click();
-
         WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
+        
+        WebElement mobileTwitterWebView = wait.until(ExpectedConditions.elementToBeClickable(MOBILE_TWITTER_WEB_VIEW));
+        mobileTwitterWebView.click();
+
+        WebElement twitterUsernameField = wait.until(ExpectedConditions.visibilityOfElementLocated(TWITTER_USERNAME_FIELD));
+        twitterUsernameField.sendKeys(email);
+
+        WebElement twitterPasswordField = wait.until(ExpectedConditions.visibilityOfElementLocated(TWITTER_PASSWORD_FIELD));
+        twitterPasswordField.sendKeys(password);
+
+        WebElement twitterSignInButton = wait.until(ExpectedConditions.elementToBeClickable(TWITTER_SIGN_IN_BUTTON));
+        twitterSignInButton.click();
+
         wait.until(ExpectedConditions.visibilityOfElementLocated(MOBILE_HOME_TITLE));
     }
 }

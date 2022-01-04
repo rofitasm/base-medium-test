@@ -9,6 +9,8 @@ import io.appium.java_client.touch.offset.PointOption;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
@@ -36,8 +38,13 @@ public class MobileHomePage {
     }
 
     public void goToTwitterLoginPage() {
-        appiumDriver.findElement(SIGN_IN_BUTTON).click();
-        appiumDriver.findElement(SIGN_IN_WITH_TWITTER_BUTTON).click();
+        WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
+
+        WebElement signInButton = wait.until(ExpectedConditions.elementToBeClickable(SIGN_IN_BUTTON));
+        signInButton.click();
+
+        WebElement signInWithTwitterButton = wait.until(ExpectedConditions.elementToBeClickable(SIGN_IN_WITH_TWITTER_BUTTON));
+        signInWithTwitterButton.click();
     }
 
     public void searchForArticle(String keyword) {
