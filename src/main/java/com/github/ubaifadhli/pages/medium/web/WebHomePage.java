@@ -15,9 +15,13 @@ public class WebHomePage {
     private By SIGN_IN_BUTTON = By.xpath("//a[text()='Sign In']");
     private By SIGN_IN_WITH_TWITTER = By.xpath("//div[text()='Sign in with Twitter']");
 
+    private By SETTINGS_BUTTON = By.xpath("//a[text()='Settings']");
+    private By LISTS_BUTTON = By.xpath("//a[text()='Lists']");
     private By SEARCH_BUTTON = By.xpath("//button[@aria-label='Search']");
     private By SEARCH_INPUT = By.xpath("//input[@aria-label='search']");
     private By SEARCH_RESULT_TITLE = By.xpath("//div[@class='postArticle-content']//h3");
+
+    private By HOME_ARTICLE = By.xpath("//a/h2");
 
     private By PROFILE_BUTTON = By.xpath("//button[child::img]");
     private By DROPDOWN_ARTICLE_BUTTON = By.xpath("//a[text()='Stories']");
@@ -50,7 +54,6 @@ public class WebHomePage {
         signInWithTwitterButton.click();
     }
 
-
     public void searchForArticle(String keyword) {
         WebDriverWait wait = new WebDriverWait(webDriver, 30);
 
@@ -62,6 +65,26 @@ public class WebHomePage {
         searchInput.click();
         searchInput.sendKeys(keyword);
         searchInput.sendKeys(Keys.ENTER);
+    }
+
+    public void goToSettingsPage() {
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
+
+        WebElement profileButton = wait.until(ExpectedConditions.elementToBeClickable(PROFILE_BUTTON));
+        profileButton.click();
+
+        WebElement settingsButton = wait.until(ExpectedConditions.elementToBeClickable(SETTINGS_BUTTON));
+        settingsButton.click();
+    }
+
+    public void goToListsPage() {
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
+
+        WebElement profileButton = wait.until(ExpectedConditions.elementToBeClickable(PROFILE_BUTTON));
+        profileButton.click();
+
+        WebElement listsButton = wait.until(ExpectedConditions.elementToBeClickable(LISTS_BUTTON));
+        listsButton.click();
     }
 
     public void goToPublishedArticlePage() {
@@ -94,6 +117,13 @@ public class WebHomePage {
 
         WebElement createNewArticleButton = wait.until(ExpectedConditions.elementToBeClickable(CREATE_NEW_ARTICLE_BUTTON));
         createNewArticleButton.click();
+    }
+
+    public void openFirstHomeArticle() {
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
+
+        List<WebElement> homeArticles = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(HOME_ARTICLE));
+        homeArticles.get(0).click();
     }
 
     public void deleteArticle() {

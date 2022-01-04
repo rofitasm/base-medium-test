@@ -24,6 +24,12 @@ public class MobileHomePage {
     private By SIGN_IN_BUTTON = MobileBy.id("com.medium.reader:id/sign_in_prompt");
     private By SIGN_IN_WITH_TWITTER_BUTTON = MobileBy.id("com.medium.reader:id/sign_in_twitter_button");
 
+    private By SETTINGS_BUTTON = MobileBy.AccessibilityId("Settings");
+    private By LISTS_BUTTON = MobileBy.AccessibilityId("Reading List");
+    private By ACCOUNT_BUTTON = MobileBy.id("com.medium.reader:id/item_account");
+
+    private By HOME_ARTICLES = MobileBy.xpath("//android.widget.TextView[@resource-id='com.medium.reader:id/post_preview_title']");
+
     private By SEARCH_BUTTON = MobileBy.AccessibilityId("Discover something new");
     private By SEARCH_INPUT = MobileBy.id("com.medium.reader:id/search_input");
     private By SEARCH_RESULT_TITLE = MobileBy.xpath("//android.widget.TextView[@resource-id='com.medium.reader:id/post_preview_title']");
@@ -65,6 +71,26 @@ public class MobileHomePage {
         searchInput.sendKeys(keyword);
 
         ((AndroidDriver) appiumDriver).pressKey(new KeyEvent(AndroidKey.ENTER));
+    }
+
+    public void goToSettingsPage() {
+        WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
+
+        WebElement profileButton = wait.until(ExpectedConditions.elementToBeClickable(PROFILE_BUTTON));
+        profileButton.click();
+
+        WebElement settingsButton = wait.until(ExpectedConditions.elementToBeClickable(SETTINGS_BUTTON));
+        settingsButton.click();
+
+        WebElement accountButton = wait.until(ExpectedConditions.elementToBeClickable(ACCOUNT_BUTTON));
+        accountButton.click();
+    }
+
+    public void goToListsPage() {
+        WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
+
+        WebElement listsButton = wait.until(ExpectedConditions.elementToBeClickable(LISTS_BUTTON));
+        listsButton.click();
     }
 
     public void openFirstUserArticle() {
@@ -129,5 +155,12 @@ public class MobileHomePage {
 
         List<WebElement> userArticleTitles = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(USER_ARTICLE_TITLE));
         return userArticleTitles.get(0).getText();
+    }
+
+    public void openFirstHomeArticle() {
+        WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
+
+        List<WebElement> userArticleTitles = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(HOME_ARTICLES));
+        userArticleTitles.get(0).click();
     }
 }

@@ -1,11 +1,5 @@
-import com.github.ubaifadhli.pages.medium.mobile.MobileArticlePage;
-import com.github.ubaifadhli.pages.medium.mobile.MobileCreateArticlePage;
-import com.github.ubaifadhli.pages.medium.mobile.MobileHomePage;
-import com.github.ubaifadhli.pages.medium.mobile.MobileLoginPage;
-import com.github.ubaifadhli.pages.medium.web.WebArticlePage;
-import com.github.ubaifadhli.pages.medium.web.WebCreateArticlePage;
-import com.github.ubaifadhli.pages.medium.web.WebHomePage;
-import com.github.ubaifadhli.pages.medium.web.WebLoginPage;
+import com.github.ubaifadhli.pages.medium.mobile.*;
+import com.github.ubaifadhli.pages.medium.web.*;
 import com.github.ubaifadhli.util.DriverFactory;
 import com.github.ubaifadhli.util.PropertiesReader;
 import com.github.ubaifadhli.util.RandomGenerator;
@@ -24,17 +18,23 @@ public class TestRunner {
     private WebLoginPage webLoginPage;
     private WebCreateArticlePage webCreateArticlePage;
     private WebArticlePage webArticlePage;
+    private WebListsPage webListsPage;
+    private WebSettingsPage webSettingsPage;
+    private WebUserPublicProfilePage webUserPublicProfilePage;
 
     private MobileHomePage mobileHomePage;
     private MobileLoginPage mobileLoginPage;
     private MobileCreateArticlePage mobileCreateArticlePage;
     private MobileArticlePage mobileArticlePage;
+    private MobileListsPage mobileListsPage;
+    private MobileSettingsPage mobileSettingsPage;
+    private MobileUserPublicProfilePage mobileUserPublicProfilePage;
 
     @DataProvider(name = "drivers", parallel = true)
     public Object[][] getDataProvider() {
         return new Object[][]{
-                new Object[]{ "WEB", DriverFactory.createWebDriver(DriverManagerType.CHROME) },
-                new Object[]{ "MOBILE", DriverFactory.createMobileDriver() },
+                new Object[]{"WEB", DriverFactory.createWebDriver(DriverManagerType.CHROME)},
+                new Object[]{"MOBILE", DriverFactory.createMobileDriver()},
         };
     }
 
@@ -186,5 +186,114 @@ public class TestRunner {
         }
     }
 
+    @Test(dataProvider = "drivers")
+    public void editBio(String platform, RemoteWebDriver platformDriver) {
+        String BIO = "Current bio " + RandomGenerator.generateString();
 
+        login(platform, platformDriver);
+
+        if (isCurrentPlatformWeb(platform)) {
+            webHomePage = new WebHomePage(platformDriver);
+            webSettingsPage = new WebSettingsPage(platformDriver);
+            webUserPublicProfilePage = new WebUserPublicProfilePage(platformDriver);
+
+            webHomePage.goToSettingsPage();
+
+            webSettingsPage.editBio(BIO);
+
+            assertThat(webUserPublicProfilePage.getUserBio(), equalTo(BIO));
+        }
+
+        if (isCurrentPlatformMobile(platform)) {
+            mobileHomePage = new MobileHomePage((AppiumDriver) platformDriver);
+            mobileSettingsPage = new MobileSettingsPage((AppiumDriver) platformDriver);
+            mobileUserPublicProfilePage = new MobileUserPublicProfilePage((AppiumDriver) platformDriver);
+
+            mobileHomePage.goToSettingsPage();
+
+            mobileSettingsPage.editBio(BIO);
+
+            assertThat(mobileUserPublicProfilePage.getUserBio(), equalTo(BIO));
+        }
+    }
+
+    @Test(dataProvider = "drivers")
+    public void createNewList(String platform, RemoteWebDriver platformDriver) {
+        String NEW_LIST_NAME = "List name " + RandomGenerator.generateString();
+
+        login(platform, platformDriver);
+
+        if (isCurrentPlatformWeb(platform)) {
+            webHomePage = new WebHomePage(platformDriver);
+            webListsPage = new WebListsPage(platformDriver);
+
+            webHomePage.goToListsPage();
+
+            webListsPage.createNewList(NEW_LIST_NAME);
+
+            webHomePage.goToListsPage();
+
+            assertThat(webListsPage.getSecondListName(), equalTo(NEW_LIST_NAME));
+        }
+
+        if (isCurrentPlatformMobile(platform)) {
+            mobileHomePage = new MobileHomePage((AppiumDriver) platformDriver);
+            mobileListsPage = new MobileListsPage((AppiumDriver) platformDriver);
+
+            mobileHomePage.goToListsPage();
+
+            mobileListsPage.createNewList(NEW_LIST_NAME);
+
+            mobileHomePage.goToListsPage();
+
+            assertThat(mobileListsPage.getSecondListName(), equalTo(NEW_LIST_NAME));
+        }
+    }
+
+    @Test(dataProvider = "drivers")
+    public void addArticleToList(String platform, RemoteWebDriver platformDriver) {
+        login(platform, platformDriver);
+
+        if (isCurrentPlatformWeb(platform)) {
+            webHomePage = new WebHomePage(platformDriver);
+            webListsPage = new WebListsPage(platformDriver);
+            webArticlePage = new WebArticlePage(platformDriver);
+
+            webHomePage.goToListsPage();
+
+            int currentArticleCount = webListsPage.getFirstListArticleCount();
+
+            webHomePage.openPage();
+
+            webHomePage.openFirstHomeArticle();
+
+            webArticlePage.clickAddToBookmarkButton();
+
+            webHomePage.goToListsPage();
+
+            int finalArticleCount = webListsPage.getFirstListArticleCount();
+
+            assertThat(finalArticleCount, equalTo(currentArticleCount + 1));
+        }
+
+        if (isCurrentPlatformMobile(platform)) {
+            mobileHomePage = new MobileHomePage((AppiumDriver) platformDriver);
+            mobileListsPage = new MobileListsPage((AppiumDriver) platformDriver);
+            mobileArticlePage = new MobileArticlePage((AppiumDriver) platformDriver);
+
+            mobileHomePage.goToListsPage();
+
+            int currentArticleCount = mobileListsPage.getFirstListArticleCount();
+
+            mobileHomePage.openFirstHomeArticle();
+
+            mobileArticlePage.clickAddToBookmarkButton();
+
+            mobileHomePage.goToListsPage();
+
+            int finalArticleCount = mobileListsPage.getFirstListArticleCount();
+
+            assertThat(finalArticleCount, equalTo(currentArticleCount + 1));
+        }
+    }
 }

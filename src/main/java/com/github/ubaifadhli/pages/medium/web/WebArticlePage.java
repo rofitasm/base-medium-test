@@ -16,6 +16,7 @@ public class WebArticlePage {
     private By COMMENT_FIELD =By.xpath("//div[@role='textbox']");
     private By PUBLISH_COMMENT_BUTTON = By.xpath("//button[text()='Respond']");
     private By ARTICLE_COMMENTS = By.xpath("//pre/div/div/div");
+    private By ADD_TO_BOOKMARK_BUTTON = By.xpath("//button[child::*[local-name()='svg' ] and @aria-label='Add to list bookmark button']");
 
 
 
@@ -44,5 +45,12 @@ public class WebArticlePage {
 
         List<WebElement> articleComments = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(ARTICLE_COMMENTS));
         return articleComments.get(0).getText();
+    }
+
+    public void clickAddToBookmarkButton() {
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
+
+        WebElement addToBookmarkButton = wait.until(ExpectedConditions.elementToBeClickable(ADD_TO_BOOKMARK_BUTTON));
+        addToBookmarkButton.click();
     }
 }
