@@ -1,18 +1,22 @@
 package com.github.ubaifadhli.pages.medium.mobile;
 
+import com.github.ubaifadhli.util.SleepHelper;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileBy;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.nativekey.AndroidKey;
+import io.appium.java_client.android.nativekey.KeyEvent;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class MobileHomePage {
     AppiumDriver<MobileElement> appiumDriver;
@@ -48,33 +52,54 @@ public class MobileHomePage {
     }
 
     public void searchForArticle(String keyword) {
-        appiumDriver.findElement(SEARCH_BUTTON).click();
+        WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
 
-        WebElement searchInput = appiumDriver.findElement(SEARCH_INPUT);
+        WebElement searchButton = wait.until(ExpectedConditions.elementToBeClickable(SEARCH_BUTTON));
+        searchButton.click();
 
+        WebElement searchInput = wait.until(ExpectedConditions.elementToBeClickable(SEARCH_INPUT));
         searchInput.click();
+
+        // Need to find the element again because the DOM changes.
+        searchInput = wait.until(ExpectedConditions.elementToBeClickable(SEARCH_INPUT));
         searchInput.sendKeys(keyword);
-        searchInput.sendKeys(Keys.ENTER);
+
+        ((AndroidDriver) appiumDriver).pressKey(new KeyEvent(AndroidKey.ENTER));
     }
 
     public void openFirstUserArticle() {
-        appiumDriver.findElement(PROFILE_BUTTON).click();
+        WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
 
-        appiumDriver.findElements(USER_ARTICLE_TITLE).get(0).click();
+        WebElement profileButton = wait.until(ExpectedConditions.elementToBeClickable(PROFILE_BUTTON));
+        profileButton.click();
+
+        List<WebElement> userArticleTitles = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(USER_ARTICLE_TITLE));
+        userArticleTitles.get(0).click();
     }
 
     public void createNewArticle() {
-        appiumDriver.findElement(PROFILE_BUTTON).click();
+        WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
 
-        appiumDriver.findElement(CREATE_NEW_ARTICLE_BUTTON).click();
+        WebElement profileButton = wait.until(ExpectedConditions.elementToBeClickable(PROFILE_BUTTON));
+        profileButton.click();
+
+        WebElement createNewArticleButton = wait.until(ExpectedConditions.elementToBeClickable(CREATE_NEW_ARTICLE_BUTTON));
+        createNewArticleButton.click();
+
+        SleepHelper.sleepForSeconds(2);
     }
 
     public void deleteArticle() {
-        appiumDriver.findElements(ARTICLE_ELLIPSIS).get(0).click();
+        WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
 
-        appiumDriver.findElement(DELETE_ARTICLE_BUTTON).click();
+        List<WebElement> articleEllipses = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(ARTICLE_ELLIPSIS));
+        articleEllipses.get(0).click();
 
-        appiumDriver.findElement(CONFIRM_DELETE_ARTICLE_BUTTON).click();
+        WebElement deleteArticleButton = wait.until(ExpectedConditions.elementToBeClickable(DELETE_ARTICLE_BUTTON));
+        deleteArticleButton.click();
+
+        WebElement confirmDeleteArticleButton = wait.until(ExpectedConditions.elementToBeClickable(CONFIRM_DELETE_ARTICLE_BUTTON));
+        confirmDeleteArticleButton.click();
     }
 
     public void refreshProfilePage() {
@@ -93,10 +118,16 @@ public class MobileHomePage {
     }
 
     public String getFirstArticleTitle() {
-        return appiumDriver.findElements(SEARCH_RESULT_TITLE).get(0).getText();
+        WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
+
+        List<WebElement> searchResultTitles = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(SEARCH_RESULT_TITLE));
+        return searchResultTitles.get(0).getText();
     }
 
     public String getFirstUserArticleTitle() {
-        return appiumDriver.findElements(USER_ARTICLE_TITLE).get(0).getText();
+        WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
+
+        List<WebElement> userArticleTitles = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(USER_ARTICLE_TITLE));
+        return userArticleTitles.get(0).getText();
     }
 }

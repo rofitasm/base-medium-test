@@ -6,6 +6,10 @@ import io.appium.java_client.MobileBy;
 import io.appium.java_client.MobileElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.List;
 
 public class MobileArticlePage {
     AppiumDriver<MobileElement> appiumDriver;
@@ -25,19 +29,25 @@ public class MobileArticlePage {
     }
 
     public void createComment(String commentText) {
-        appiumDriver.findElement(COMMENT_BUTTON).click();
+        WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
 
-        WebElement commentField = appiumDriver.findElement(COMMENT_FIELD);
+        WebElement commentButton = wait.until(ExpectedConditions.elementToBeClickable(COMMENT_BUTTON));
+        commentButton.click();
 
+        WebElement commentField = wait.until(ExpectedConditions.elementToBeClickable(COMMENT_FIELD));
         commentField.click();
         commentField.sendKeys(commentText);
 
-        appiumDriver.findElement(PUBLISH_COMMENT_BUTTON).click();
+        WebElement publishCommentButton = wait.until(ExpectedConditions.elementToBeClickable(PUBLISH_COMMENT_BUTTON));
+        publishCommentButton.click();
 
         SleepHelper.sleepForSeconds(2);
     }
 
     public String getFirstCommentText() {
-        return appiumDriver.findElements(ARTICLE_COMMENTS).get(0).getText();
+        WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
+
+        List<WebElement> articleComments = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(ARTICLE_COMMENTS));
+        return articleComments.get(0).getText();
     }
 }

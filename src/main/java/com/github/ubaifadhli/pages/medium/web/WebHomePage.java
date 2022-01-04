@@ -7,6 +7,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.List;
+
 public class WebHomePage {
     private WebDriver webDriver;
 
@@ -50,9 +52,12 @@ public class WebHomePage {
 
 
     public void searchForArticle(String keyword) {
-        webDriver.findElement(SEARCH_BUTTON).click();
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
 
-        WebElement searchInput = webDriver.findElement(SEARCH_INPUT);
+        WebElement searchButton = wait.until(ExpectedConditions.elementToBeClickable(SEARCH_BUTTON));
+        searchButton.click();
+
+        WebElement searchInput = wait.until(ExpectedConditions.elementToBeClickable(SEARCH_INPUT));
 
         searchInput.click();
         searchInput.sendKeys(keyword);
@@ -60,38 +65,61 @@ public class WebHomePage {
     }
 
     public void goToPublishedArticlePage() {
-        webDriver.findElement(PROFILE_BUTTON).click();
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
 
-        webDriver.findElement(DROPDOWN_ARTICLE_BUTTON).click();
+        WebElement profileButton = wait.until(ExpectedConditions.elementToBeClickable(PROFILE_BUTTON));
+        profileButton.click();
 
-        webDriver.findElement(PUBLISHED_ARTICLE_SECTION).click();
+        WebElement dropdownArticleButton = wait.until(ExpectedConditions.elementToBeClickable(DROPDOWN_ARTICLE_BUTTON));
+        dropdownArticleButton.click();
+
+        WebElement publishedArticleSection = wait.until(ExpectedConditions.elementToBeClickable(PUBLISHED_ARTICLE_SECTION));
+        publishedArticleSection.click();
     }
 
     public void openFirstUserArticle() {
         goToPublishedArticlePage();
 
-        webDriver.findElements(USER_ARTICLE_TITLE).get(0).click();
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
+
+        List<WebElement> userArticleTitles = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(USER_ARTICLE_TITLE));
+        userArticleTitles.get(0).click();
     }
 
     public void createNewArticle() {
-        webDriver.findElement(PROFILE_BUTTON).click();
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
 
-        webDriver.findElement(CREATE_NEW_ARTICLE_BUTTON).click();
+        WebElement profileButton = wait.until(ExpectedConditions.elementToBeClickable(PROFILE_BUTTON));
+        profileButton.click();
+
+        WebElement createNewArticleButton = wait.until(ExpectedConditions.elementToBeClickable(CREATE_NEW_ARTICLE_BUTTON));
+        createNewArticleButton.click();
     }
 
     public void deleteArticle() {
-        webDriver.findElements(ARTICLE_ELLIPSIS).get(0).click();
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
 
-        webDriver.findElement(DELETE_ARTICLE_BUTTON).click();
+        List<WebElement> articleEllipses = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(ARTICLE_ELLIPSIS));
+        articleEllipses.get(0).click();
 
-        webDriver.findElement(CONFIRM_DELETE_ARTICLE_BUTTON).click();
+        WebElement deleteArticleButton = wait.until(ExpectedConditions.elementToBeClickable(DELETE_ARTICLE_BUTTON));
+        deleteArticleButton.click();
+
+        WebElement confirmDeleteArticleButton = wait.until(ExpectedConditions.elementToBeClickable(CONFIRM_DELETE_ARTICLE_BUTTON));
+        confirmDeleteArticleButton.click();
     }
 
     public String getFirstArticleTitle() {
-        return webDriver.findElements(SEARCH_RESULT_TITLE).get(0).getText();
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
+
+        List<WebElement> searchResultTitles = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(SEARCH_RESULT_TITLE));
+        return searchResultTitles.get(0).getText();
     }
 
     public String getFirstUserArticleTitle() {
-        return webDriver.findElements(USER_ARTICLE_TITLE).get(0).getText();
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
+
+        List<WebElement> userArticleTitles = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(USER_ARTICLE_TITLE));
+        return userArticleTitles.get(0).getText();
     }
 }

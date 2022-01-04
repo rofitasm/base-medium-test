@@ -111,6 +111,8 @@ public class TestRunner {
 
             webCreateArticlePage.fillAndPublishArticle(ARTICLE_TITLE);
 
+            webCreateArticlePage.goToPublishedArticlePage();
+
             assertThat(webHomePage.getFirstUserArticleTitle(), equalTo(ARTICLE_TITLE));
         }
 

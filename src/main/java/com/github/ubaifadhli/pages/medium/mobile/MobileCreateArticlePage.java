@@ -1,9 +1,13 @@
 package com.github.ubaifadhli.pages.medium.mobile;
 
+import com.github.ubaifadhli.util.SleepHelper;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileBy;
+import org.bouncycastle.crypto.params.TweakableBlockCipherParameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class MobileCreateArticlePage {
     private AppiumDriver appiumDriver;
@@ -18,13 +22,18 @@ public class MobileCreateArticlePage {
     }
 
     public void fillAndPublishArticle(String articleTitle) {
-        WebElement articleTextArea = appiumDriver.findElement(ARTICLE_TEXT_AREA);
+        WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
+
+        WebElement articleTextArea = wait.until(ExpectedConditions.elementToBeClickable(ARTICLE_TEXT_AREA));
 
         articleTextArea.click();
         articleTextArea.sendKeys(articleTitle);
 
-        appiumDriver.findElement(PUBLISH_ARTICLE_BUTTON).click();
+        WebElement publishArticleButton = wait.until(ExpectedConditions.elementToBeClickable(PUBLISH_ARTICLE_BUTTON));
+        publishArticleButton.click();
 
-        appiumDriver.findElement(CONFIRM_PUBLISH_ARTICLE_BUTTON).click();
+        WebElement confirmPublishArticleButton = wait.until(ExpectedConditions.elementToBeClickable(CONFIRM_PUBLISH_ARTICLE_BUTTON));
+        confirmPublishArticleButton.click();
+        SleepHelper.sleepForSeconds(2);
     }
 }

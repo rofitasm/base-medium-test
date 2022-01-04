@@ -4,6 +4,8 @@ import com.github.ubaifadhli.util.SleepHelper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class WebCreateArticlePage {
     private WebDriver webDriver;
@@ -18,16 +20,23 @@ public class WebCreateArticlePage {
     }
 
     public void fillAndPublishArticle(String articleTitle) {
-        WebElement articleTextArea = webDriver.findElement(ARTICLE_TEXT_AREA);
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
+
+        WebElement articleTextArea = wait.until(ExpectedConditions.elementToBeClickable(ARTICLE_TEXT_AREA));
 
         articleTextArea.click();
         articleTextArea.sendKeys(articleTitle);
 
-        webDriver.findElement(PUBLISH_ARTICLE_BUTTON);
-        webDriver.findElement(CONFIRM_PUBLISH_ARTICLE_BUTTON);
+        WebElement publishArticleButton = wait.until(ExpectedConditions.elementToBeClickable(PUBLISH_ARTICLE_BUTTON));
+        publishArticleButton.click();
+
+        WebElement confirmPublishArticleButton = wait.until(ExpectedConditions.elementToBeClickable(CONFIRM_PUBLISH_ARTICLE_BUTTON));
+        confirmPublishArticleButton.click();
 
         SleepHelper.sleepForSeconds(2);
+    }
 
+    public void goToPublishedArticlePage() {
         webDriver.get("https://medium.com/me/stories/public");
     }
 }

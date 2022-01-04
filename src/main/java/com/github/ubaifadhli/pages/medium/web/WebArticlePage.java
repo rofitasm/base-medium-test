@@ -4,6 +4,10 @@ import com.github.ubaifadhli.util.SleepHelper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.List;
 
 public class WebArticlePage {
     private WebDriver webDriver;
@@ -20,19 +24,25 @@ public class WebArticlePage {
     }
 
     public void createComment(String commentText) {
-        webDriver.findElement(COMMENT_BUTTON).click();
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
 
-        WebElement commentField = webDriver.findElement(COMMENT_FIELD);
+        WebElement commentButton = wait.until(ExpectedConditions.elementToBeClickable(COMMENT_BUTTON));
+        commentButton.click();
 
+        WebElement commentField = wait.until(ExpectedConditions.elementToBeClickable(COMMENT_FIELD));
         commentField.click();
         commentField.sendKeys(commentText);
 
-        webDriver.findElement(PUBLISH_COMMENT_BUTTON).click();
+        WebElement publishCommentButton = wait.until(ExpectedConditions.elementToBeClickable(PUBLISH_COMMENT_BUTTON));
+        publishCommentButton.click();
 
         SleepHelper.sleepForSeconds(2);
     }
 
     public String getFirstCommentText() {
-        return webDriver.findElements(ARTICLE_COMMENTS).get(0).getText();
+        WebDriverWait wait = new WebDriverWait(webDriver, 30);
+
+        List<WebElement> articleComments = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(ARTICLE_COMMENTS));
+        return articleComments.get(0).getText();
     }
 }
