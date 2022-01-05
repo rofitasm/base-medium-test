@@ -27,12 +27,12 @@ public class WebListsPage {
         createNewListButton.click();
 
         WebElement newListNameField = wait.until(ExpectedConditions.elementToBeClickable(NEW_LIST_NAME_FIELD));
-        newListNameField.click();
+        newListNameField.sendKeys(newListName);
 
         WebElement popupCreateNewListButton = wait.until(ExpectedConditions.elementToBeClickable(POPUP_CREATE_NEW_LIST_BUTTON));
         popupCreateNewListButton.click();
 
-        SleepHelper.sleepForSeconds(2);
+        SleepHelper.sleepForSeconds(3);
     }
 
     public String getSecondListName() {

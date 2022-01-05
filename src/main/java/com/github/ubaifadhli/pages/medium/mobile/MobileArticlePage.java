@@ -51,6 +51,8 @@ public class MobileArticlePage {
     }
 
     public void clickAddToBookmarkButton() {
+        SleepHelper.sleepForSeconds(2);
+
         WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
 
         TouchAction touchAction = new TouchAction(appiumDriver);
@@ -58,6 +60,8 @@ public class MobileArticlePage {
         touchAction.tap(PointOption.point(760, 1689))
                 .release()
                 .perform();
+
+        SleepHelper.sleepForSeconds(2);
 
         WebElement confirmAddToBookmarkButton = wait.until(ExpectedConditions.elementToBeClickable(CONFIRM_ADD_TO_BOOKMARK_BUTTON));
         confirmAddToBookmarkButton.click();

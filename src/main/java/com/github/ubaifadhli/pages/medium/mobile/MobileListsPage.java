@@ -13,7 +13,7 @@ public class MobileListsPage {
     private AppiumDriver<MobileElement> appiumDriver;
 
     private By CREATE_NEW_LIST_BUTTON = MobileBy.id("com.medium.reader:id/btn_new_list");
-    private By NEW_LIST_NAME_FIELD = MobileBy.id("com.medium.reader:id/textinput_placeholder");
+    private By NEW_LIST_NAME_FIELD = MobileBy.id("com.medium.reader:id/text_field_input_list_name");
     private By POPUP_CREATE_NEW_LIST_BUTTON = MobileBy.id("com.medium.reader:id/btn_create");
     private By SECOND_LIST_NAME = MobileBy.xpath("(//android.widget.TextView[@resource-id='com.medium.reader:id/tv_name'])[2]");
     private By LIST_ARTICLE_COUNT = MobileBy.id("com.medium.reader:id/tv_counters");
@@ -29,7 +29,7 @@ public class MobileListsPage {
         createNewListButton.click();
 
         WebElement newListNameField = wait.until(ExpectedConditions.elementToBeClickable(NEW_LIST_NAME_FIELD));
-        newListNameField.click();
+        newListNameField.sendKeys(newListName);
 
         WebElement popupCreateNewListButton = wait.until(ExpectedConditions.elementToBeClickable(POPUP_CREATE_NEW_LIST_BUTTON));
         popupCreateNewListButton.click();

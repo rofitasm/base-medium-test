@@ -1,5 +1,6 @@
 package com.github.ubaifadhli.pages.medium.web;
 
+import com.github.ubaifadhli.util.SleepHelper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -16,14 +17,14 @@ public class WebHomePage {
     private By SIGN_IN_WITH_TWITTER = By.xpath("//div[text()='Sign in with Twitter']");
 
     private By SETTINGS_BUTTON = By.xpath("//a[text()='Settings']");
-    private By LISTS_BUTTON = By.xpath("//a[text()='Lists']");
+    private By LISTS_BUTTON = By.xpath("(//a[text()='Lists'])[last()]");
     private By SEARCH_BUTTON = By.xpath("//button[@aria-label='Search']");
     private By SEARCH_INPUT = By.xpath("//input[@aria-label='search']");
     private By SEARCH_RESULT_TITLE = By.xpath("//div[@class='postArticle-content']//h3");
 
     private By HOME_ARTICLE = By.xpath("//a/h2");
 
-    private By PROFILE_BUTTON = By.xpath("//button[child::img]");
+    private By PROFILE_BUTTON = By.xpath("(//button[child::img])[last()]");
     private By DROPDOWN_ARTICLE_BUTTON = By.xpath("//a[text()='Stories']");
     private By PUBLISHED_ARTICLE_SECTION = By.xpath("//div[contains(text(), 'Published')]");
 
@@ -41,6 +42,7 @@ public class WebHomePage {
     }
 
     public void openPage() {
+        webDriver.manage().window().maximize();
         webDriver.get("https://www.medium.com");
     }
 
@@ -137,6 +139,8 @@ public class WebHomePage {
 
         WebElement confirmDeleteArticleButton = wait.until(ExpectedConditions.elementToBeClickable(CONFIRM_DELETE_ARTICLE_BUTTON));
         confirmDeleteArticleButton.click();
+
+        SleepHelper.sleepForSeconds(2);
     }
 
     public String getFirstArticleTitle() {

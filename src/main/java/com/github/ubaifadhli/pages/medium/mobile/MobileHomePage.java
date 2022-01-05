@@ -28,6 +28,7 @@ public class MobileHomePage {
     private By LISTS_BUTTON = MobileBy.AccessibilityId("Reading List");
     private By ACCOUNT_BUTTON = MobileBy.id("com.medium.reader:id/item_account");
 
+    private By HOME_BUTTON = MobileBy.AccessibilityId("Home");
     private By HOME_ARTICLES = MobileBy.xpath("//android.widget.TextView[@resource-id='com.medium.reader:id/post_preview_title']");
 
     private By SEARCH_BUTTON = MobileBy.AccessibilityId("Discover something new");
@@ -159,6 +160,9 @@ public class MobileHomePage {
 
     public void openFirstHomeArticle() {
         WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
+
+        WebElement homeButton = wait.until(ExpectedConditions.elementToBeClickable(HOME_BUTTON));
+        homeButton.click();
 
         List<WebElement> userArticleTitles = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(HOME_ARTICLES));
         userArticleTitles.get(0).click();

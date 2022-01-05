@@ -78,7 +78,7 @@ public class TestRunner {
         String SEARCH_KEYWORD = "spring boot";
         String EXPECTED_FIRST_ARTICLE_NAME = "How to scale Microservices with Message Queues, Spring Boot, and Kubernetes";
 
-        login(platform, platformDriver);
+//        login(platform, platformDriver);
 
         if (isCurrentPlatformWeb(platform)) {
             webHomePage = new WebHomePage(platformDriver);
@@ -99,9 +99,9 @@ public class TestRunner {
 
     @Test(dataProvider = "drivers")
     public void createNewArticle(String platform, RemoteWebDriver platformDriver) {
-        String ARTICLE_TITLE = "Test article " + RandomGenerator.generateString();
+        String ARTICLE_TITLE = "Test article " + RandomGenerator.generateNumberString();
 
-        login(platform, platformDriver);
+//        login(platform, platformDriver);
 
         if (isCurrentPlatformWeb(platform)) {
             webHomePage = new WebHomePage(platformDriver);
@@ -132,9 +132,9 @@ public class TestRunner {
 
     @Test(dataProvider = "drivers")
     public void createNewComment(String platform, RemoteWebDriver platformDriver) {
-        String COMMENT = "Try to comment " + RandomGenerator.generateString();
+        String COMMENT = "Try to comment " + RandomGenerator.generateNumberString();
 
-        login(platform, platformDriver);
+//        login(platform, platformDriver);
 
         if (isCurrentPlatformWeb(platform)) {
             webHomePage = new WebHomePage(platformDriver);
@@ -188,9 +188,9 @@ public class TestRunner {
 
     @Test(dataProvider = "drivers")
     public void editBio(String platform, RemoteWebDriver platformDriver) {
-        String BIO = "Current bio " + RandomGenerator.generateString();
+        String BIO = "Current bio " + RandomGenerator.generateNumberString();
 
-        login(platform, platformDriver);
+//        login(platform, platformDriver);
 
         if (isCurrentPlatformWeb(platform)) {
             webHomePage = new WebHomePage(platformDriver);
@@ -219,9 +219,9 @@ public class TestRunner {
 
     @Test(dataProvider = "drivers")
     public void createNewList(String platform, RemoteWebDriver platformDriver) {
-        String NEW_LIST_NAME = "List name " + RandomGenerator.generateString();
+        String NEW_LIST_NAME = "List name " + RandomGenerator.generateNumberString();
 
-        login(platform, platformDriver);
+//        login(platform, platformDriver);
 
         if (isCurrentPlatformWeb(platform)) {
             webHomePage = new WebHomePage(platformDriver);
@@ -244,15 +244,13 @@ public class TestRunner {
 
             mobileListsPage.createNewList(NEW_LIST_NAME);
 
-            mobileHomePage.goToListsPage();
-
             assertThat(mobileListsPage.getSecondListName(), equalTo(NEW_LIST_NAME));
         }
     }
 
     @Test(dataProvider = "drivers")
     public void addArticleToList(String platform, RemoteWebDriver platformDriver) {
-        login(platform, platformDriver);
+//        login(platform, platformDriver);
 
         if (isCurrentPlatformWeb(platform)) {
             webHomePage = new WebHomePage(platformDriver);

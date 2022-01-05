@@ -12,8 +12,10 @@ public class WebSettingsPage {
 
     private By EDIT_BIO_BUTTON = By.xpath("//button[@data-action='edit-bio']");
     private By EDIT_BIO_FIELD = By.xpath("//p[contains(@class, 'graf--p')]");
-    private By SAVE_BIO_BUTTON = By.xpath("//button[@data-action='save-bio']");
+    private By SAVE_BIO_BUTTON = By.xpath("//android.view.View[3]/android.widget.Button");
     private By USER_PUBLIC_PROFILE_LINK = By.xpath("//p[@data-default-value='Add your bio']//following-sibling::div/a");
+
+
 
     public WebSettingsPage(WebDriver webDriver) {
         this.webDriver = webDriver;
@@ -25,9 +27,11 @@ public class WebSettingsPage {
         WebElement editBioButton = wait.until(ExpectedConditions.elementToBeClickable(EDIT_BIO_BUTTON));
         editBioButton.click();
 
-        WebElement editBioField = wait.until(ExpectedConditions.elementToBeClickable(EDIT_BIO_FIELD));
+        WebElement editBioField = wait.until(ExpectedConditions.visibilityOfElementLocated(EDIT_BIO_FIELD));
         editBioField.clear();
         editBioField.sendKeys(bioText);
+
+        SleepHelper.sleepForSeconds(2);
 
         WebElement saveBioButton = wait.until(ExpectedConditions.elementToBeClickable(SAVE_BIO_BUTTON));
         saveBioButton.click();

@@ -18,12 +18,12 @@ public class DriverFactory {
     public static AppiumDriver createMobileDriver() {
         DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
 
-        Map<String, String> capabilityMap = Stream.of(
-                new AbstractMap.SimpleImmutableEntry<>("automationName", "UiAutomator2"),
+        Map<String, Object> capabilityMap = Stream.of(
                 new AbstractMap.SimpleImmutableEntry<>("platformName", "Android"),
                 new AbstractMap.SimpleImmutableEntry<>("udid", "emulator-5554"),
                 new AbstractMap.SimpleImmutableEntry<>("appPackage", "com.medium.reader"),
-                new AbstractMap.SimpleImmutableEntry<>("appActivity", "com.medium.android.donkey.start.SplashActivity")
+                new AbstractMap.SimpleImmutableEntry<>("appActivity", "com.medium.android.donkey.start.SplashActivity"),
+                new AbstractMap.SimpleImmutableEntry<>("noReset", true)
         ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         capabilityMap.forEach(desiredCapabilities::setCapability);
