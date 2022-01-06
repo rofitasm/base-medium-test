@@ -4,11 +4,9 @@ import com.github.ubaifadhli.util.SleepHelper;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileBy;
 import io.appium.java_client.MobileElement;
-import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.nativekey.AndroidKey;
 import io.appium.java_client.android.nativekey.KeyEvent;
-import io.appium.java_client.touch.offset.PointOption;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -20,14 +18,12 @@ public class MobileArticlePage {
     AppiumDriver<MobileElement> appiumDriver;
 
     private By COMMENT_BUTTON = MobileBy.AccessibilityId("Read responses");
-
     private By COMMENT_FIELD = MobileBy.id("com.medium.reader:id/response_editor");
-
     private By PUBLISH_COMMENT_BUTTON = MobileBy.AccessibilityId("Publish response");
-
     private By ARTICLE_COMMENTS = MobileBy.id("com.medium.reader:id/response_text");
-
+    private By ADD_TO_BOOKMARK_BUTTON = MobileBy.id("com.medium.reader:id/bookmark_touch_target");
     private By CONFIRM_ADD_TO_BOOKMARK_BUTTON = MobileBy.id("com.medium.reader:id/btn_save_to");
+
 
 
     public MobileArticlePage(AppiumDriver appiumDriver) {
@@ -51,15 +47,10 @@ public class MobileArticlePage {
     }
 
     public void clickAddToBookmarkButton() {
-        SleepHelper.sleepForSeconds(2);
-
         WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
 
-        TouchAction touchAction = new TouchAction(appiumDriver);
-
-        touchAction.tap(PointOption.point(760, 1689))
-                .release()
-                .perform();
+        WebElement addToBookmarkButton = wait.until(ExpectedConditions.elementToBeClickable(ADD_TO_BOOKMARK_BUTTON));
+        addToBookmarkButton.click();
 
         SleepHelper.sleepForSeconds(2);
 

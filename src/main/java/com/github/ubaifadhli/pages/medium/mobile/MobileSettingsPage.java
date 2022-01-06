@@ -18,7 +18,7 @@ public class MobileSettingsPage {
     private By EDIT_BIO_BUTTON = MobileBy.xpath("(//android.widget.Button)[2]");
     private By EDIT_BIO_FIELD = MobileBy.xpath("//android.widget.EditText");
     private By SAVE_BIO_BUTTON = MobileBy.xpath("(//android.widget.Button)[2]");
-    private By USER_PUBLIC_PROFILE_LINK = MobileBy.xpath("(//android.view.View[@content-desc=\"Profile\"])[2]/android.widget.TextView");
+    private By USER_PUBLIC_PROFILE_LINK = MobileBy.xpath("(//android.view.View[@content-desc='Profile'])[2]/android.widget.TextView");
 
     private By MOBILE_WEB_VIEW = MobileBy.xpath("//android.webkit.WebView");
 
