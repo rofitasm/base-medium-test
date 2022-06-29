@@ -13,6 +13,8 @@ public class WebListsPage extends WebPageObject {
     private By SECOND_LIST_NAME = By.xpath("(//a/div/div/h2)[2]");
     private By LIST_ARTICLE_COUNT = By.xpath("//a[contains(@href, 'reading-list')]//p");
 
+    private By READING_LIST_BUTTON = By.xpath("//h2[text()='Reading list']");
+
     public WebListsPage(WebDriver webDriver) {
         super(webDriver);
     }
@@ -35,11 +37,21 @@ public class WebListsPage extends WebPageObject {
         return secondListName.getText();
     }
 
-    public int getFirstListArticleCount() {
+    public int getReadingListArticleCount() {
         WebElement listArticleCount = getElementAfterVisible(LIST_ARTICLE_COUNT);
 
         String articleCount = listArticleCount.getText().split(" ")[0];
 
         return articleCount.equals("Nothing") ? 0 : Integer.parseInt(articleCount);
+    }
+
+    public void clickSecondList() {
+        WebElement secondListName = getElementAfterClickable(SECOND_LIST_NAME);
+        secondListName.click();
+    }
+
+    public void clickReadingList() {
+        WebElement readingListButton = getElementAfterClickable(READING_LIST_BUTTON);
+        readingListButton.click();
     }
 }

@@ -3,15 +3,14 @@ import com.github.ubaifadhli.pages.medium.web.*;
 import com.github.ubaifadhli.util.DatetimeHelper;
 import com.github.ubaifadhli.util.DriverFactory;
 import com.github.ubaifadhli.util.PropertiesReader;
+import com.github.ubaifadhli.util.RandomGenerator;
 import io.appium.java_client.AppiumDriver;
-import io.github.bonigarcia.wdm.config.DriverManagerType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 
 public class TestRunner {
     private WebHomePage webHomePage;
@@ -21,6 +20,11 @@ public class TestRunner {
     private WebListsPage webListsPage;
     private WebSettingsPage webSettingsPage;
     private WebUserPublicProfilePage webUserPublicProfilePage;
+    private WebProfilePage webProfilePage;
+    private WebMembershipPage webMembershipPage;
+    private WebWriterPage webWriterPage;
+    private WebFollowingPage webFollowingPage;
+    private WebListDetailPage webListDetailPage;
 
     private MobileHomePage mobileHomePage;
     private MobileLoginPage mobileLoginPage;
@@ -29,6 +33,11 @@ public class TestRunner {
     private MobileListsPage mobileListsPage;
     private MobileSettingsPage mobileSettingsPage;
     private MobileUserPublicProfilePage mobileUserPublicProfilePage;
+    private MobileProfilePage mobileProfilePage;
+    private MobileMembershipPage mobileMembershipPage;
+    private MobileWriterPage mobileWriterPage;
+    private MobileFollowingPage mobileFollowingPage;
+    private MobileListDetailPage mobileListDetailPage;
 
     @DataProvider(name = "drivers", parallel = true)
     public Object[][] getDataProvider() {
@@ -168,7 +177,7 @@ public class TestRunner {
 
             String firstArticleTitle = webHomePage.getFirstUserArticleTitle();
 
-            webHomePage.deleteArticle();
+            webProfilePage.deleteArticle();
 
             String currentFirstArticleTitle = webHomePage.getFirstUserArticleTitle();
 
@@ -180,7 +189,7 @@ public class TestRunner {
 
             String firstArticleTitle = mobileHomePage.getFirstUserArticleTitle();
 
-            mobileHomePage.deleteArticle();
+            mobileProfilePage.deleteArticle();
 
             String currentFirstArticleTitle = mobileHomePage.getFirstUserArticleTitle();
 
@@ -211,6 +220,7 @@ public class TestRunner {
             mobileUserPublicProfilePage = new MobileUserPublicProfilePage((AppiumDriver) platformDriver);
 
             mobileHomePage.goToSettingsPage();
+            mobileHomePage.goToAccountSettingsPage();
 
             mobileSettingsPage.editBio(BIO);
 
@@ -260,7 +270,7 @@ public class TestRunner {
             webHomePage.openPage();
             webHomePage.goToListsPage();
 
-            int currentArticleCount = webListsPage.getFirstListArticleCount();
+            int currentArticleCount = webListsPage.getReadingListArticleCount();
 
             webHomePage.openPage();
 
@@ -270,7 +280,7 @@ public class TestRunner {
 
             webHomePage.goToListsPage();
 
-            int finalArticleCount = webListsPage.getFirstListArticleCount();
+            int finalArticleCount = webListsPage.getReadingListArticleCount();
 
             assertThat(finalArticleCount, equalTo(currentArticleCount + 1));
         }
@@ -282,7 +292,7 @@ public class TestRunner {
 
             mobileHomePage.goToListsPage();
 
-            int currentArticleCount = mobileListsPage.getFirstListArticleCount();
+            int currentArticleCount = mobileListsPage.getReadingListArticleCount();
 
             mobileHomePage.openFirstHomeArticle();
 
@@ -290,7 +300,7 @@ public class TestRunner {
 
             mobileHomePage.goToListsPage();
 
-            int finalArticleCount = mobileListsPage.getFirstListArticleCount();
+            int finalArticleCount = mobileListsPage.getReadingListArticleCount();
 
             assertThat(finalArticleCount, equalTo(currentArticleCount + 1));
         }
@@ -298,41 +308,289 @@ public class TestRunner {
 
     @Test(dataProvider = "drivers")
     public void userChecksMembershipOffering(String platform, RemoteWebDriver platformDriver) {
+        if (isCurrentPlatformWeb(platform)) {
+            webHomePage = new WebHomePage(platformDriver);
+            webMembershipPage = new WebMembershipPage(platformDriver);
 
+            webHomePage.openPage();
+
+            webHomePage.goToMembershipPage();
+
+            assertThat(webMembershipPage.getMonthlySubsPrice(), is(both(greaterThan(4.98)).and(lessThan(5.01))));
+            assertThat(webMembershipPage.getAnnualSubsPrice(), is(both(greaterThan(49.98)).and(lessThan(50.01))));
+        }
+
+        if (isCurrentPlatformMobile(platform)) {
+            mobileHomePage = new MobileHomePage((AppiumDriver) platformDriver);
+            mobileMembershipPage = new MobileMembershipPage((AppiumDriver) platformDriver);
+
+            mobileHomePage.goToMembershipPage();
+
+            assertThat(mobileMembershipPage.getMonthlySubsPrice(), is(both(greaterThan(4.98)).and(lessThan(5.01))));
+            assertThat(mobileMembershipPage.getAnnualSubsPrice(), is(both(greaterThan(49.98)).and(lessThan(50.01))));
+        }
     }
 
     @Test(dataProvider = "drivers")
     public void userEditsAnArticle(String platform, RemoteWebDriver platformDriver) {
+        String ARTICLE_TITLE = "Edited article " + DatetimeHelper.getCurrentDatetime();
 
+        if (isCurrentPlatformWeb(platform)) {
+            webHomePage = new WebHomePage(platformDriver);
+            webProfilePage = new WebProfilePage(platformDriver);
+            webCreateArticlePage = new WebCreateArticlePage(platformDriver);
+
+            webHomePage.openPage();
+
+            webHomePage.goToPublishedArticlePage();
+            webProfilePage.editArticle();
+
+            webCreateArticlePage.fillAndRepublishArticle(ARTICLE_TITLE);
+
+            assertThat(webHomePage.getFirstUserArticleTitle(), equalTo(ARTICLE_TITLE));
+        }
+
+        if (isCurrentPlatformMobile(platform)) {
+            mobileHomePage = new MobileHomePage((AppiumDriver) platformDriver);
+            mobileProfilePage = new MobileProfilePage((AppiumDriver) platformDriver);
+            mobileCreateArticlePage = new MobileCreateArticlePage((AppiumDriver) platformDriver);
+
+            mobileHomePage.goToPublishedArticlePage();
+            mobileProfilePage.editArticle();
+
+            mobileCreateArticlePage.fillAndRepublishArticle(ARTICLE_TITLE);
+
+            mobileHomePage.refreshPage();
+
+            assertThat(mobileHomePage.getFirstUserArticleTitle(), equalTo(ARTICLE_TITLE));
+        }
     }
 
     @Test(dataProvider = "drivers")
     public void userChecksFollowingInProfile(String platform, RemoteWebDriver platformDriver) {
+        if (isCurrentPlatformWeb(platform)) {
+            webHomePage = new WebHomePage(platformDriver);
+            webArticlePage = new WebArticlePage(platformDriver);
+            webWriterPage = new WebWriterPage(platformDriver);
+            webFollowingPage = new WebFollowingPage(platformDriver);
 
+            webHomePage.openPage();
+
+            webHomePage.openFirstHomeArticle();
+            webArticlePage.goToWriterProfile();
+
+            webWriterPage.followWriter();
+
+            String followedWriter = webWriterPage.getWriterName();
+
+            webHomePage.backToHomeFromArticleWriter();
+            webHomePage.openFollowingPage();
+
+            assertThat(followedWriter, in(webFollowingPage.getFollowingWritersName()));
+        }
+
+        if (isCurrentPlatformMobile(platform)) {
+            mobileHomePage = new MobileHomePage((AppiumDriver) platformDriver);
+            mobileArticlePage = new MobileArticlePage((AppiumDriver) platformDriver);
+            mobileWriterPage = new MobileWriterPage((AppiumDriver) platformDriver);
+            mobileFollowingPage = new MobileFollowingPage((AppiumDriver) platformDriver);
+
+            mobileHomePage.openFirstHomeArticle();
+            mobileArticlePage.goToWriterProfile();
+
+            mobileWriterPage.followWriter();
+
+            String followedWriter = mobileWriterPage.getWriterName();
+
+            mobileHomePage.backToHomeFromArticleWriter();
+            mobileHomePage.openFollowingPage();
+
+            assertThat(followedWriter, in(mobileFollowingPage.getFollowingWritersName()));
+        }
     }
 
     @Test(dataProvider = "drivers")
     public void userChangesUsername(String platform, RemoteWebDriver platformDriver) {
+        String NEW_USERNAME = "username" + RandomGenerator.generateNumberString();
 
+        if (isCurrentPlatformWeb(platform)) {
+            webHomePage = new WebHomePage(platformDriver);
+            webSettingsPage = new WebSettingsPage(platformDriver);
+
+            webHomePage.openPage();
+
+            webHomePage.goToSettingsPage();
+
+            webSettingsPage.editUsername(NEW_USERNAME);
+            webSettingsPage.saveUsername();
+
+            assertThat(webSettingsPage.getCurrentUsername(), equalTo(NEW_USERNAME));
+            assertThat(webSettingsPage.getCurrentProfileURL(), containsString(NEW_USERNAME));
+        }
+
+        if (isCurrentPlatformMobile(platform)) {
+            mobileHomePage = new MobileHomePage((AppiumDriver) platformDriver);
+            mobileSettingsPage = new MobileSettingsPage((AppiumDriver) platformDriver);
+
+            mobileHomePage.goToSettingsPage();
+            mobileHomePage.goToAccountSettingsPage();
+
+            mobileSettingsPage.editUsername(NEW_USERNAME);
+            mobileSettingsPage.saveUsername();
+
+            NEW_USERNAME += "a";
+
+            assertThat(mobileSettingsPage.getCurrentUsername(), equalTo(NEW_USERNAME));
+            assertThat(mobileSettingsPage.getCurrentProfileURL(), containsString(NEW_USERNAME));
+        }
     }
 
     @Test(dataProvider = "drivers")
     public void userChangesToMaximumBio(String platform, RemoteWebDriver platformDriver) {
+        String MAX_LIMIT_BIO = RandomGenerator.generateStringByLength(160);
 
+        if (isCurrentPlatformWeb(platform)) {
+            webHomePage = new WebHomePage(platformDriver);
+            webSettingsPage = new WebSettingsPage(platformDriver);
+            webUserPublicProfilePage = new WebUserPublicProfilePage(platformDriver);
+
+            webHomePage.openPage();
+            webHomePage.goToSettingsPage();
+
+            webSettingsPage.editBio(MAX_LIMIT_BIO);
+
+            assertThat(webUserPublicProfilePage.getUserBio(), equalTo(MAX_LIMIT_BIO));
+        }
+
+        if (isCurrentPlatformMobile(platform)) {
+            mobileHomePage = new MobileHomePage((AppiumDriver) platformDriver);
+            mobileSettingsPage = new MobileSettingsPage((AppiumDriver) platformDriver);
+            mobileUserPublicProfilePage = new MobileUserPublicProfilePage((AppiumDriver) platformDriver);
+
+            mobileHomePage.goToSettingsPage();
+            mobileHomePage.goToAccountSettingsPage();
+
+            mobileSettingsPage.editBio(MAX_LIMIT_BIO);
+
+            assertThat(mobileUserPublicProfilePage.getUserBio(), equalTo(MAX_LIMIT_BIO));
+        }
     }
 
     @Test(dataProvider = "drivers")
     public void userDeletesAnArticleList(String platform, RemoteWebDriver platformDriver) {
+        if (isCurrentPlatformWeb(platform)) {
+            webHomePage = new WebHomePage(platformDriver);
+            webListsPage = new WebListsPage(platformDriver);
+            webListDetailPage = new WebListDetailPage(platformDriver);
 
+            webHomePage.openPage();
+
+            webHomePage.goToListsPage();
+
+            String previousSecondListName = webListsPage.getSecondListName();
+
+            webListsPage.clickSecondList();
+
+            webListDetailPage.deleteList();
+
+            String currentSecondListName = webListsPage.getSecondListName();
+
+            assertThat(currentSecondListName, not(previousSecondListName));
+        }
+
+        if (isCurrentPlatformMobile(platform)) {
+            mobileHomePage = new MobileHomePage((AppiumDriver) platformDriver);
+            mobileListsPage = new MobileListsPage((AppiumDriver) platformDriver);
+            mobileListDetailPage = new MobileListDetailPage((AppiumDriver) platformDriver);
+
+            mobileHomePage.goToListsPage();
+
+            String previousSecondListName = mobileListsPage.getSecondListName();
+
+            mobileListsPage.clickSecondList();
+
+            mobileListDetailPage.deleteList();
+
+            mobileHomePage.refreshPage();
+
+            String currentSecondListName = mobileListsPage.getSecondListName();
+
+            assertThat(currentSecondListName, not(previousSecondListName));
+        }
     }
 
     @Test(dataProvider = "drivers")
     public void userRemovesArticleFromList(String platform, RemoteWebDriver platformDriver) {
+        if (isCurrentPlatformWeb(platform)) {
+            webHomePage = new WebHomePage(platformDriver);
+            webListsPage = new WebListsPage(platformDriver);
+            webListDetailPage = new WebListDetailPage(platformDriver);
 
+            webHomePage.openPage();
+
+            webHomePage.goToListsPage();
+
+            int previousArticleCount = webListsPage.getReadingListArticleCount();
+
+            webListsPage.clickReadingList();
+
+            webListDetailPage.removeFirstArticleFromList();
+
+            webHomePage.goToListsPage();
+
+            int currentArticleCount = webListsPage.getReadingListArticleCount();
+
+            assertThat(currentArticleCount, equalTo(previousArticleCount - 1));
+        }
+
+        if (isCurrentPlatformMobile(platform)) {
+            mobileHomePage = new MobileHomePage((AppiumDriver) platformDriver);
+            mobileListsPage = new MobileListsPage((AppiumDriver) platformDriver);
+            mobileListDetailPage = new MobileListDetailPage((AppiumDriver) platformDriver);
+
+            mobileHomePage.goToListsPage();
+
+            int previousArticleCount = mobileListsPage.getReadingListArticleCount();
+
+            mobileListsPage.clickReadingList();
+
+            mobileListDetailPage.removeFirstArticleFromList();
+
+            mobileHomePage.goToListsPage();
+
+            int currentArticleCount = mobileListsPage.getReadingListArticleCount();
+
+            assertThat(currentArticleCount, equalTo(previousArticleCount - 1));
+        }
     }
 
     @Test(dataProvider = "drivers")
     public void userChangesToExistingUsername(String platform, RemoteWebDriver platformDriver) {
+        String EXISTING_USERNAME = "john";
 
+        if (isCurrentPlatformWeb(platform)) {
+            webHomePage = new WebHomePage(platformDriver);
+            webSettingsPage = new WebSettingsPage(platformDriver);
+
+            webHomePage.openPage();
+
+            webHomePage.goToSettingsPage();
+
+            webSettingsPage.editUsername(EXISTING_USERNAME);
+
+            assertThat(webSettingsPage.getUsernameErrorText(), equalTo("Username is not available"));
+        }
+
+        if (isCurrentPlatformMobile(platform)) {
+            mobileHomePage = new MobileHomePage((AppiumDriver) platformDriver);
+            mobileSettingsPage = new MobileSettingsPage((AppiumDriver) platformDriver);
+
+            mobileHomePage.goToSettingsPage();
+            mobileHomePage.goToAccountSettingsPage();
+
+            mobileSettingsPage.editUsername(EXISTING_USERNAME);
+
+            assertThat(mobileSettingsPage.getUsernameErrorText(), equalTo("Username is not available"));
+        }
     }
 }

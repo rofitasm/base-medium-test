@@ -33,11 +33,10 @@ public class MobileHomePage extends MobilePageObject {
     private By CREATE_NEW_ARTICLE_BUTTON = MobileBy.AccessibilityId("Write a story");
     private By USER_ARTICLE_TITLE = MobileBy.xpath("//android.widget.TextView[@resource-id='com.medium.reader:id/common_item_paragraph_text']");
 
-    private By ARTICLE_ELLIPSIS = MobileBy.AccessibilityId("More options");
-    private By DELETE_ARTICLE_BUTTON = MobileBy.xpath("//android.widget.TextView[@text='Delete']");
-    private By CONFIRM_DELETE_ARTICLE_BUTTON = MobileBy.id("android:id/button1");
-
     private By PROFILE_ELLIPSIS = MobileBy.xpath("//android.widget.FrameLayout[@resource-id='com.medium.reader:id/you_tab_header_settings']/android.widget.ImageView");
+
+    private By GET_MEMBERSHIP_BUTTON = MobileBy.id("com.medium.reader:id/item_become_a_member");
+    private By FOLLOWING_BUTTON = MobileBy.id("com.medium.reader:id/creator_groupie_header_following_count");
 
     public MobileHomePage(AppiumDriver appiumDriver) {
         super(appiumDriver);
@@ -65,6 +64,30 @@ public class MobileHomePage extends MobilePageObject {
         pressEnter();
     }
 
+    public void openFollowingPage() {
+        SleepHelper.sleepForSeconds(1);
+
+        WebElement profileButton = getElementAfterClickable(PROFILE_BUTTON);
+        profileButton.click();
+
+        WebElement followingButton = getElementAfterClickable(FOLLOWING_BUTTON);
+        followingButton.click();
+    }
+
+    public void backToHomeFromArticleWriter() {
+        pressBack();
+        SleepHelper.sleepForSeconds(1);
+        pressBack();
+    }
+
+    public void goToMembershipPage() {
+        WebElement settingsButton = getElementAfterClickable(SETTINGS_BUTTON);
+        settingsButton.click();
+
+        WebElement getMembershipButton = getElementAfterClickable(GET_MEMBERSHIP_BUTTON);
+        getMembershipButton.click();
+    }
+
     public void goToSettingsPage() {
         WebElement profileButton = getElementAfterClickable(PROFILE_BUTTON);
         profileButton.click();
@@ -74,7 +97,9 @@ public class MobileHomePage extends MobilePageObject {
 
         WebElement settingsButton = getElementAfterClickable(SETTINGS_BUTTON);
         settingsButton.click();
+    }
 
+    public void goToAccountSettingsPage() {
         WebElement accountButton = getElementAfterClickable(ACCOUNT_BUTTON);
         accountButton.click();
     }
@@ -109,17 +134,6 @@ public class MobileHomePage extends MobilePageObject {
         SleepHelper.sleepForSeconds(2);
     }
 
-    public void deleteArticle() {
-        List<WebElement> articleEllipses = getElementsAfterVisible(ARTICLE_ELLIPSIS);
-        articleEllipses.get(0).click();
-
-        WebElement deleteArticleButton = getElementAfterClickable(DELETE_ARTICLE_BUTTON);
-        deleteArticleButton.click();
-
-        WebElement confirmDeleteArticleButton = getElementAfterClickable(CONFIRM_DELETE_ARTICLE_BUTTON);
-        confirmDeleteArticleButton.click();
-    }
-
     public String getFirstArticleTitle() {
         List<WebElement> searchResultTitles = getElementsAfterVisible(SEARCH_RESULT_TITLE);
         return searchResultTitles.get(0).getText();
@@ -136,5 +150,10 @@ public class MobileHomePage extends MobilePageObject {
 
         List<WebElement> userArticleTitles = getElementsAfterVisible(HOME_ARTICLES);
         userArticleTitles.get(0).click();
+    }
+
+    public void goToPublishedArticlePage() {
+        WebElement profileButton = getElementAfterClickable(PROFILE_BUTTON);
+        profileButton.click();
     }
 }

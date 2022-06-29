@@ -30,6 +30,10 @@ public class MobilePageObject {
         ((AndroidDriver) getMobileDriver()).pressKey(new KeyEvent(AndroidKey.BACK));
     }
 
+    public void pressKey(AndroidKey key) {
+        ((AndroidDriver) getMobileDriver()).pressKey(new KeyEvent(key));
+    }
+
     public void pressEnter() {
         ((AndroidDriver) getMobileDriver()).pressKey(new KeyEvent(AndroidKey.ENTER));
     }
@@ -43,6 +47,21 @@ public class MobilePageObject {
         int deviceMiddleY = getMobileDriver().manage().window().getSize().getHeight() / 2;
 
         int deviceEndY = (int) (deviceMiddleY * 1.5);
+
+        TouchAction touchAction = new TouchAction(getMobileDriver());
+
+        touchAction.press(PointOption.point(deviceMiddleX, deviceMiddleY))
+                .waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
+                .moveTo(PointOption.point(deviceMiddleX, deviceEndY))
+                .release()
+                .perform();
+    }
+
+    public void swipeUp() {
+        int deviceMiddleX = getMobileDriver().manage().window().getSize().getWidth() / 2;
+        int deviceMiddleY = getMobileDriver().manage().window().getSize().getHeight() / 2;
+
+        int deviceEndY = (int) (deviceMiddleY * 0.5);
 
         TouchAction touchAction = new TouchAction(getMobileDriver());
 

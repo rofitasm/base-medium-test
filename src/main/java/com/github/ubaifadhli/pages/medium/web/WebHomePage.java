@@ -18,6 +18,8 @@ public class WebHomePage extends WebPageObject {
     private By SEARCH_INPUT = By.xpath("//input[@aria-label='search']");
     private By SEARCH_RESULT_TITLE = By.xpath("//a[@aria-label='Post Preview Title']//h2");
 
+    private By HOME_BUTTON = By.xpath("//*[local-name()='svg' and @aria-label='Home']");
+
     private By HOME_ARTICLE = By.xpath("//a[@aria-label='Post Preview Title']");
 
     private By PROFILE_BUTTON = By.xpath("//button[@aria-label='user options menu']");
@@ -25,10 +27,8 @@ public class WebHomePage extends WebPageObject {
 
     private By CREATE_NEW_ARTICLE_BUTTON = By.xpath("//a[contains(@href, 'new-story')]");
     private By USER_ARTICLE_TITLE = By.xpath("//a[contains(@href, 'your_stories_page') and parent::h3]");
-
-    private By ARTICLE_ELLIPSIS = By.xpath("//button[@aria-controls='yourStoryActionsMenu']");
-    private By DELETE_ARTICLE_BUTTON = By.xpath("//div[@id='yourStoryActionsMenu']//button");
-    private By CONFIRM_DELETE_ARTICLE_BUTTON = By.xpath("//button[text()='Delete']");
+    private By GET_MEMBERSHIP_BUTTON = By.xpath("(//a[text()='Get unlimited access'])[2]");
+    private By FOLLOWING_BUTTON = By.xpath("//a[contains(@href, 'following')]//p");
 
     public WebHomePage(WebDriver webDriver) {
         super(webDriver);
@@ -47,6 +47,26 @@ public class WebHomePage extends WebPageObject {
 
         WebElement signInWithTwitterButton = getElementAfterClickable(SIGN_IN_WITH_TWITTER);
         signInWithTwitterButton.click();
+    }
+
+    public void openFollowingPage() {
+        SleepHelper.sleepForSeconds(1);
+
+        WebElement profileButton = getElementAfterClickable(PROFILE_BUTTON);
+        profileButton.click();
+
+        WebElement followingButton = getElementAfterClickable(FOLLOWING_BUTTON);
+        followingButton.click();
+    }
+
+    public void backToHomeFromArticleWriter() {
+        WebElement homeButton = getElementAfterClickable(HOME_BUTTON);
+        homeButton.click();
+    }
+
+    public void goToMembershipPage() {
+        WebElement getMembershipButton = getElementAfterClickable(GET_MEMBERSHIP_BUTTON);
+        getMembershipButton.click();
     }
 
     public void searchForArticle(String keyword) {
@@ -96,19 +116,6 @@ public class WebHomePage extends WebPageObject {
     public void openFirstHomeArticle() {
         List<WebElement> homeArticles = getElementsAfterVisible(HOME_ARTICLE);
         homeArticles.get(0).click();
-    }
-
-    public void deleteArticle() {
-        List<WebElement> articleEllipses = getElementsAfterVisible(ARTICLE_ELLIPSIS);
-        articleEllipses.get(0).click();
-
-        WebElement deleteArticleButton = getElementAfterClickable(DELETE_ARTICLE_BUTTON);
-        deleteArticleButton.click();
-
-        WebElement confirmDeleteArticleButton = getElementAfterClickable(CONFIRM_DELETE_ARTICLE_BUTTON);
-        confirmDeleteArticleButton.click();
-
-        SleepHelper.sleepForSeconds(2);
     }
 
     public String getFirstArticleTitle() {
