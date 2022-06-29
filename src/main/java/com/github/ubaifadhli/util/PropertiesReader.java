@@ -1,5 +1,6 @@
 package com.github.ubaifadhli.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -23,7 +24,7 @@ public class PropertiesReader {
         return properties.getProperty(propertyName);
     }
 
-    public int getPropertyAsInteger(String propertyName) {
-        return Integer.parseInt(getPropertyAsString(propertyName));
+    public static String getFolderAbsolutePath(String folderRelativePath) {
+        return new File(folderRelativePath).getAbsolutePath();
     }
 }

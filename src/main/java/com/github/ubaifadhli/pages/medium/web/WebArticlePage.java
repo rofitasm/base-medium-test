@@ -1,56 +1,57 @@
 package com.github.ubaifadhli.pages.medium.web;
 
+import com.github.ubaifadhli.pages.medium.WebPageObject;
 import com.github.ubaifadhli.util.SleepHelper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
-public class WebArticlePage {
-    private WebDriver webDriver;
-
-    private By COMMENT_BUTTON = By.xpath("//div[child::*[local-name()='svg' and @aria-label='responses']]");
-    private By COMMENT_FIELD =By.xpath("//div[@role='textbox']");
+public class WebArticlePage extends WebPageObject {
+    private By COMMENT_BUTTON = By.xpath("(//button[@aria-label='responses'])[2]");
+    private By COMMENT_FIELD = By.xpath("//div[@role='textbox']");
     private By PUBLISH_COMMENT_BUTTON = By.xpath("//button[text()='Respond']");
     private By ARTICLE_COMMENTS = By.xpath("//pre/div/div/div");
     private By ADD_TO_BOOKMARK_BUTTON = By.xpath("//button[child::*[local-name()='svg' ] and @aria-label='Add to list bookmark button']");
-
-
+    private By WRITER_PROFILE = By.xpath("//h2[contains(@class, 'pw-author-name')]");
 
     public WebArticlePage(WebDriver webDriver) {
-        this.webDriver = webDriver;
+        super(webDriver);
     }
 
     public void createComment(String commentText) {
-        WebDriverWait wait = new WebDriverWait(webDriver, 30);
-
-        WebElement commentButton = wait.until(ExpectedConditions.elementToBeClickable(COMMENT_BUTTON));
+        WebElement commentButton = getElementAfterClickable(COMMENT_BUTTON);
         commentButton.click();
 
-        WebElement commentField = wait.until(ExpectedConditions.elementToBeClickable(COMMENT_FIELD));
+        WebElement commentField = getElementAfterClickable(COMMENT_FIELD);
         commentField.click();
         commentField.sendKeys(commentText);
 
-        WebElement publishCommentButton = wait.until(ExpectedConditions.elementToBeClickable(PUBLISH_COMMENT_BUTTON));
+        getElementAfterClickable(PUBLISH_COMMENT_BUTTON);
+
+        WebElement publishCommentButton = getElementAfterClickable(PUBLISH_COMMENT_BUTTON);
         publishCommentButton.click();
 
         SleepHelper.sleepForSeconds(2);
     }
 
     public String getFirstCommentText() {
-        WebDriverWait wait = new WebDriverWait(webDriver, 30);
-
-        List<WebElement> articleComments = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(ARTICLE_COMMENTS));
+        List<WebElement> articleComments = getElementsAfterVisible(ARTICLE_COMMENTS);
         return articleComments.get(0).getText();
     }
 
     public void clickAddToBookmarkButton() {
-        WebDriverWait wait = new WebDriverWait(webDriver, 30);
-
-        WebElement addToBookmarkButton = wait.until(ExpectedConditions.elementToBeClickable(ADD_TO_BOOKMARK_BUTTON));
+        WebElement addToBookmarkButton = getElementAfterClickable(ADD_TO_BOOKMARK_BUTTON);
         addToBookmarkButton.click();
+
+        SleepHelper.sleepForSeconds(1);
+
+        getWebDriver().navigate().back();
+    }
+
+    public void goToWriterProfile() {
+        WebElement writerProfile = getElementAfterClickable(WRITER_PROFILE);
+        writerProfile.click();
     }
 }

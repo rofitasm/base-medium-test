@@ -5,6 +5,8 @@ import io.appium.java_client.android.AndroidDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.github.bonigarcia.wdm.config.DriverManagerType;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.MalformedURLException;
@@ -38,7 +40,12 @@ public class DriverFactory {
     }
 
     public static WebDriver createWebDriver(DriverManagerType type) {
-        return WebDriverManager.getInstance(type).create();
+        WebDriverManager.getInstance(type).setup();
 
+        ChromeOptions chromeOptions = new ChromeOptions();
+        String optionArgument = String.format("--user-data-dir=%s", PropertiesReader.getFolderAbsolutePath("browser-session/chrome-cache-dir"));
+        chromeOptions.addArguments(optionArgument);
+
+        return new ChromeDriver(chromeOptions);
     }
 }

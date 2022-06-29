@@ -1,8 +1,8 @@
 import com.github.ubaifadhli.pages.medium.mobile.*;
 import com.github.ubaifadhli.pages.medium.web.*;
+import com.github.ubaifadhli.util.DatetimeHelper;
 import com.github.ubaifadhli.util.DriverFactory;
 import com.github.ubaifadhli.util.PropertiesReader;
-import com.github.ubaifadhli.util.RandomGenerator;
 import io.appium.java_client.AppiumDriver;
 import io.github.bonigarcia.wdm.config.DriverManagerType;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -33,7 +33,7 @@ public class TestRunner {
     @DataProvider(name = "drivers", parallel = true)
     public Object[][] getDataProvider() {
         return new Object[][]{
-                new Object[]{"WEB", DriverFactory.createWebDriver(DriverManagerType.CHROME)},
+//                new Object[]{"WEB", DriverFactory.createWebDriver(DriverManagerType.CHROME)},
                 new Object[]{"MOBILE", DriverFactory.createMobileDriver()},
         };
     }
@@ -46,12 +46,16 @@ public class TestRunner {
         return platform.equals("MOBILE");
     }
 
-    @Test(dataProvider = "drivers")
-    public void login(String platform, RemoteWebDriver platformDriver) {
+    public String getPropertyByPlatform(String propertyName, String platform) {
         PropertiesReader reader = new PropertiesReader("application.properties");
 
-        String username = reader.getPropertyAsString("login.twitter.username");
-        String password = reader.getPropertyAsString("login.twitter.password");
+        return reader.getPropertyAsString(platform.toLowerCase() + "." + propertyName);
+    }
+
+    @Test(dataProvider = "drivers")
+    public void login(String platform, RemoteWebDriver platformDriver) {
+        String username = getPropertyByPlatform("login.twitter.username", platform);
+        String password = getPropertyByPlatform("login.twitter.password", platform);
 
         if (isCurrentPlatformWeb(platform)) {
             webHomePage = new WebHomePage(platformDriver);
@@ -78,10 +82,10 @@ public class TestRunner {
         String SEARCH_KEYWORD = "spring boot";
         String EXPECTED_FIRST_ARTICLE_NAME = "How to scale Microservices with Message Queues, Spring Boot, and Kubernetes";
 
-//        login(platform, platformDriver);
-
         if (isCurrentPlatformWeb(platform)) {
             webHomePage = new WebHomePage(platformDriver);
+
+            webHomePage.openPage();
 
             webHomePage.searchForArticle(SEARCH_KEYWORD);
 
@@ -99,14 +103,13 @@ public class TestRunner {
 
     @Test(dataProvider = "drivers")
     public void createNewArticle(String platform, RemoteWebDriver platformDriver) {
-        String ARTICLE_TITLE = "Test article " + RandomGenerator.generateNumberString();
-
-//        login(platform, platformDriver);
+        String ARTICLE_TITLE = "Test article " + DatetimeHelper.getCurrentDatetime();
 
         if (isCurrentPlatformWeb(platform)) {
             webHomePage = new WebHomePage(platformDriver);
             webCreateArticlePage = new WebCreateArticlePage(platformDriver);
 
+            webHomePage.openPage();
             webHomePage.createNewArticle();
 
             webCreateArticlePage.fillAndPublishArticle(ARTICLE_TITLE);
@@ -124,7 +127,7 @@ public class TestRunner {
 
             mobileCreateArticlePage.fillAndPublishArticle(ARTICLE_TITLE);
 
-            mobileHomePage.refreshProfilePage();
+            mobileHomePage.refreshPage();
 
             assertThat(mobileHomePage.getFirstUserArticleTitle(), equalTo(ARTICLE_TITLE));
         }
@@ -132,14 +135,13 @@ public class TestRunner {
 
     @Test(dataProvider = "drivers")
     public void createNewComment(String platform, RemoteWebDriver platformDriver) {
-        String COMMENT = "Try to comment " + RandomGenerator.generateNumberString();
-
-//        login(platform, platformDriver);
+        String COMMENT = "Try to comment " + DatetimeHelper.getCurrentDatetime();
 
         if (isCurrentPlatformWeb(platform)) {
             webHomePage = new WebHomePage(platformDriver);
             webArticlePage = new WebArticlePage(platformDriver);
 
+            webHomePage.openPage();
             webHomePage.openFirstUserArticle();
             webArticlePage.createComment(COMMENT);
 
@@ -188,15 +190,14 @@ public class TestRunner {
 
     @Test(dataProvider = "drivers")
     public void editBio(String platform, RemoteWebDriver platformDriver) {
-        String BIO = "Current bio " + RandomGenerator.generateNumberString();
-
-//        login(platform, platformDriver);
+        String BIO = "Current bio " + DatetimeHelper.getCurrentDatetime();
 
         if (isCurrentPlatformWeb(platform)) {
             webHomePage = new WebHomePage(platformDriver);
             webSettingsPage = new WebSettingsPage(platformDriver);
             webUserPublicProfilePage = new WebUserPublicProfilePage(platformDriver);
 
+            webHomePage.openPage();
             webHomePage.goToSettingsPage();
 
             webSettingsPage.editBio(BIO);
@@ -219,14 +220,13 @@ public class TestRunner {
 
     @Test(dataProvider = "drivers")
     public void createNewList(String platform, RemoteWebDriver platformDriver) {
-        String NEW_LIST_NAME = "List name " + RandomGenerator.generateNumberString();
-
-//        login(platform, platformDriver);
+        String NEW_LIST_NAME = "List name " + DatetimeHelper.getCurrentDatetime();
 
         if (isCurrentPlatformWeb(platform)) {
             webHomePage = new WebHomePage(platformDriver);
             webListsPage = new WebListsPage(platformDriver);
 
+            webHomePage.openPage();
             webHomePage.goToListsPage();
 
             webListsPage.createNewList(NEW_LIST_NAME);
@@ -244,19 +244,20 @@ public class TestRunner {
 
             mobileListsPage.createNewList(NEW_LIST_NAME);
 
+            mobileHomePage.goToListsPage();
+
             assertThat(mobileListsPage.getSecondListName(), equalTo(NEW_LIST_NAME));
         }
     }
 
     @Test(dataProvider = "drivers")
     public void addArticleToList(String platform, RemoteWebDriver platformDriver) {
-//        login(platform, platformDriver);
-
         if (isCurrentPlatformWeb(platform)) {
             webHomePage = new WebHomePage(platformDriver);
             webListsPage = new WebListsPage(platformDriver);
             webArticlePage = new WebArticlePage(platformDriver);
 
+            webHomePage.openPage();
             webHomePage.goToListsPage();
 
             int currentArticleCount = webListsPage.getFirstListArticleCount();
@@ -293,5 +294,45 @@ public class TestRunner {
 
             assertThat(finalArticleCount, equalTo(currentArticleCount + 1));
         }
+    }
+
+    @Test(dataProvider = "drivers")
+    public void userChecksMembershipOffering(String platform, RemoteWebDriver platformDriver) {
+
+    }
+
+    @Test(dataProvider = "drivers")
+    public void userEditsAnArticle(String platform, RemoteWebDriver platformDriver) {
+
+    }
+
+    @Test(dataProvider = "drivers")
+    public void userChecksFollowingInProfile(String platform, RemoteWebDriver platformDriver) {
+
+    }
+
+    @Test(dataProvider = "drivers")
+    public void userChangesUsername(String platform, RemoteWebDriver platformDriver) {
+
+    }
+
+    @Test(dataProvider = "drivers")
+    public void userChangesToMaximumBio(String platform, RemoteWebDriver platformDriver) {
+
+    }
+
+    @Test(dataProvider = "drivers")
+    public void userDeletesAnArticleList(String platform, RemoteWebDriver platformDriver) {
+
+    }
+
+    @Test(dataProvider = "drivers")
+    public void userRemovesArticleFromList(String platform, RemoteWebDriver platformDriver) {
+
+    }
+
+    @Test(dataProvider = "drivers")
+    public void userChangesToExistingUsername(String platform, RemoteWebDriver platformDriver) {
+
     }
 }

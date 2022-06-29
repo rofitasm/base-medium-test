@@ -1,69 +1,60 @@
 package com.github.ubaifadhli.pages.medium.mobile;
 
+import com.github.ubaifadhli.pages.medium.MobilePageObject;
 import com.github.ubaifadhli.util.SleepHelper;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileBy;
-import io.appium.java_client.MobileElement;
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.nativekey.AndroidKey;
-import io.appium.java_client.android.nativekey.KeyEvent;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
-public class MobileArticlePage {
-    AppiumDriver<MobileElement> appiumDriver;
-
+public class MobileArticlePage extends MobilePageObject {
     private By COMMENT_BUTTON = MobileBy.AccessibilityId("Read responses");
     private By COMMENT_FIELD = MobileBy.id("com.medium.reader:id/response_editor");
     private By PUBLISH_COMMENT_BUTTON = MobileBy.AccessibilityId("Publish response");
     private By ARTICLE_COMMENTS = MobileBy.id("com.medium.reader:id/response_text");
-    private By ADD_TO_BOOKMARK_BUTTON = MobileBy.id("com.medium.reader:id/bookmark_touch_target");
+    private By ADD_TO_BOOKMARK_BUTTON = MobileBy.xpath("//android.widget.ImageView[@content-desc='Save']");
     private By CONFIRM_ADD_TO_BOOKMARK_BUTTON = MobileBy.id("com.medium.reader:id/btn_save_to");
-
-
+    private By WRITER_PROFILE = MobileBy.AccessibilityId("View Author Profile");
 
     public MobileArticlePage(AppiumDriver appiumDriver) {
-        this.appiumDriver = appiumDriver;
+        super(appiumDriver);
     }
 
     public void createComment(String commentText) {
-        WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
-
-        WebElement commentButton = wait.until(ExpectedConditions.elementToBeClickable(COMMENT_BUTTON));
+        WebElement commentButton = getElementAfterClickable(COMMENT_BUTTON);
         commentButton.click();
 
-        WebElement commentField = wait.until(ExpectedConditions.elementToBeClickable(COMMENT_FIELD));
+        WebElement commentField = getElementAfterClickable(COMMENT_FIELD);
         commentField.click();
         commentField.sendKeys(commentText);
 
-        WebElement publishCommentButton = wait.until(ExpectedConditions.elementToBeClickable(PUBLISH_COMMENT_BUTTON));
+        WebElement publishCommentButton = getElementAfterClickable(PUBLISH_COMMENT_BUTTON);
         publishCommentButton.click();
 
         SleepHelper.sleepForSeconds(2);
     }
 
     public void clickAddToBookmarkButton() {
-        WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
-
-        WebElement addToBookmarkButton = wait.until(ExpectedConditions.elementToBeClickable(ADD_TO_BOOKMARK_BUTTON));
+        WebElement addToBookmarkButton = getElementAfterClickable(ADD_TO_BOOKMARK_BUTTON);
         addToBookmarkButton.click();
 
         SleepHelper.sleepForSeconds(2);
 
-        WebElement confirmAddToBookmarkButton = wait.until(ExpectedConditions.elementToBeClickable(CONFIRM_ADD_TO_BOOKMARK_BUTTON));
+        WebElement confirmAddToBookmarkButton = getElementAfterClickable(CONFIRM_ADD_TO_BOOKMARK_BUTTON);
         confirmAddToBookmarkButton.click();
 
-        ((AndroidDriver) appiumDriver).pressKey(new KeyEvent(AndroidKey.BACK));
+        pressBack();
     }
 
     public String getFirstCommentText() {
-        WebDriverWait wait = new WebDriverWait(appiumDriver, 30);
-
-        List<WebElement> articleComments = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(ARTICLE_COMMENTS));
+        List<WebElement> articleComments = getElementsAfterVisible(ARTICLE_COMMENTS);
         return articleComments.get(0).getText();
+    }
+
+    public void goToWriterProfile() {
+        WebElement writerProfile = getElementAfterClickable(WRITER_PROFILE);
+        writerProfile.click();
     }
 }

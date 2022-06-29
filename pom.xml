@@ -70,7 +70,6 @@
             <version>${webdrivermanager.version}</version>
         </dependency>
 
-
     </dependencies>
 
 </project>

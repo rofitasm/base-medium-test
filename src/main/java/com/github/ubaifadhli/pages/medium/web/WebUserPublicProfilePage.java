@@ -1,24 +1,19 @@
 package com.github.ubaifadhli.pages.medium.web;
 
+import com.github.ubaifadhli.pages.medium.WebPageObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class WebUserPublicProfilePage {
-    private WebDriver webDriver;
-
-    private By USER_BIO = By.xpath("//h2//following-sibling::div/p");
+public class WebUserPublicProfilePage extends WebPageObject {
+    private By USER_BIO = By.xpath("//h2/parent::a/following-sibling::p");
 
     public WebUserPublicProfilePage(WebDriver webDriver) {
-        this.webDriver = webDriver;
+        super(webDriver);
     }
 
     public String getUserBio() {
-        WebDriverWait wait = new WebDriverWait(webDriver, 30);
-
-        WebElement userBio = wait.until(ExpectedConditions.visibilityOfElementLocated(USER_BIO));
+        WebElement userBio = getElementAfterVisible(USER_BIO);
         return userBio.getText();
     }
 }
