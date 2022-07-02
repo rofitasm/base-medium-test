@@ -1,9 +1,6 @@
 import com.github.ubaifadhli.pages.medium.mobile.*;
 import com.github.ubaifadhli.pages.medium.web.*;
-import com.github.ubaifadhli.util.DatetimeHelper;
-import com.github.ubaifadhli.util.DriverFactory;
-import com.github.ubaifadhli.util.PropertiesReader;
-import com.github.ubaifadhli.util.RandomGenerator;
+import com.github.ubaifadhli.util.*;
 import io.appium.java_client.AppiumDriver;
 import io.github.bonigarcia.wdm.config.DriverManagerType;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -84,6 +81,7 @@ public class TestRunner {
             mobileHomePage.goToTwitterLoginPage();
 
             mobileLoginPage.fillTwitterLoginCredentials(username, password);
+            mobileLoginPage.waitForHomeTitle();
         }
     }
 
@@ -595,6 +593,177 @@ public class TestRunner {
             mobileSettingsPage.editUsername(EXISTING_USERNAME);
 
             assertThat(mobileSettingsPage.getUsernameErrorText(), equalTo("Username is not available"));
+        }
+    }
+
+    @Test(dataProvider = "drivers")
+    public void userLogsInUsingInvalidCredential(String platform, RemoteWebDriver platformDriver) {
+        String username = getPropertyByPlatform("login.twitter.username", platform);
+        String password = "invalidPassword";
+
+        if (isCurrentPlatformWeb(platform)) {
+            webHomePage = new WebHomePage(platformDriver);
+            webLoginPage = new WebLoginPage(platformDriver);
+
+            webHomePage.openPage();
+            webHomePage.goToTwitterLoginPage();
+
+            webLoginPage.fillTwitterLoginCredentials(username, password);
+
+            assertThat(webLoginPage.getLoginErrorText(), containsString("you entered did not match our records"));
+        }
+
+        if (isCurrentPlatformMobile(platform)) {
+            mobileHomePage = new MobileHomePage((AppiumDriver) platformDriver);
+            mobileLoginPage = new MobileLoginPage((AppiumDriver) platformDriver);
+
+            mobileHomePage.goToTwitterLoginPage();
+
+            mobileLoginPage.fillTwitterLoginCredentials(username, password);
+
+            assertThat(mobileLoginPage.getLoginErrorText(), containsString("you entered did not match our records"));
+        }
+    }
+
+    @Test(dataProvider = "drivers")
+    public void userUnfollowsWriter(String platform, RemoteWebDriver platformDriver) {
+        if (isCurrentPlatformWeb(platform)) {
+            webHomePage = new WebHomePage(platformDriver);
+            webArticlePage = new WebArticlePage(platformDriver);
+            webWriterPage = new WebWriterPage(platformDriver);
+            webFollowingPage = new WebFollowingPage(platformDriver);
+
+            webHomePage.openPage();
+
+            webHomePage.openFirstHomeArticle();
+            webArticlePage.goToWriterProfile();
+
+            webWriterPage.followWriter();
+
+            webHomePage.backToHomeFromArticleWriter();
+            webHomePage.openFollowingPage();
+
+            SleepHelper.sleepForSeconds(1);
+
+            int previousWritersCount = webFollowingPage.getFollowedWritersCount();
+
+            webFollowingPage.unfollowWriter();
+
+            int currentWritersCount = webFollowingPage.getFollowedWritersCount();
+
+            assertThat(currentWritersCount, equalTo(previousWritersCount - 1));
+        }
+
+        if (isCurrentPlatformMobile(platform)) {
+            mobileHomePage = new MobileHomePage((AppiumDriver) platformDriver);
+            mobileArticlePage = new MobileArticlePage((AppiumDriver) platformDriver);
+            mobileWriterPage = new MobileWriterPage((AppiumDriver) platformDriver);
+            mobileFollowingPage = new MobileFollowingPage((AppiumDriver) platformDriver);
+
+            mobileHomePage.openFirstHomeArticle();
+            mobileArticlePage.goToWriterProfile();
+
+            mobileWriterPage.followWriter();
+
+            mobileHomePage.backToHomeFromArticleWriter();
+            mobileHomePage.openFollowingPage();
+
+            SleepHelper.sleepForSeconds(1);
+
+            int previousWritersCount = mobileFollowingPage.getFollowedWritersCount();
+
+            mobileFollowingPage.unfollowWriter();
+            mobileHomePage.openFollowingPage();
+
+            SleepHelper.sleepForSeconds(1);
+
+            int currentWritersCount = mobileFollowingPage.getFollowedWritersCount();
+
+            assertThat(currentWritersCount, equalTo(previousWritersCount - 1));
+        }
+    }
+
+    @Test(dataProvider = "drivers")
+    public void userDeletesAComment(String platform, RemoteWebDriver platformDriver) {
+        createNewComment(platform, platformDriver);
+
+        if (isCurrentPlatformWeb(platform)) {
+            webArticlePage = new WebArticlePage(platformDriver);
+
+            SleepHelper.sleepForSeconds(1);
+
+            int previousCommentCount = webArticlePage.getReplyCommentCount();
+
+            webArticlePage.deleteComment();
+
+            SleepHelper.sleepForSeconds(1);
+
+            int currentCommentCount = webArticlePage.getReplyCommentCount();
+
+            assertThat(currentCommentCount, equalTo(previousCommentCount - 1));
+        }
+
+        if (isCurrentPlatformMobile(platform)) {
+            mobileArticlePage = new MobileArticlePage((AppiumDriver) platformDriver);
+
+            SleepHelper.sleepForSeconds(1);
+
+            int previousCommentCount = mobileArticlePage.getReplyCommentCount();
+
+            mobileArticlePage.deleteComment();
+
+            SleepHelper.sleepForSeconds(1);
+
+            int currentCommentCount = mobileArticlePage.getReplyCommentCount();
+
+            assertThat(currentCommentCount, equalTo(previousCommentCount - 1));
+        }
+    }
+
+    @Test(dataProvider = "drivers")
+    public void userChecksRecentlyVisitedArticle(String platform, RemoteWebDriver platformDriver) {
+        if (isCurrentPlatformWeb(platform)) {
+            webHomePage = new WebHomePage(platformDriver);
+            webFollowingPage = new WebFollowingPage(platformDriver);
+
+            webHomePage.openPage();
+
+            String actualVisitedArticle = webHomePage.getFirstArticleTitle();
+
+            webHomePage.openFirstHomeArticle();
+            SleepHelper.sleepForSeconds(2);
+
+            webHomePage.openFollowingPage();
+            webFollowingPage.clickReadingHistoryTab();
+
+            String recentlyVisitedArticle = webFollowingPage.getReadingHistoryArticle();
+
+            assertThat(recentlyVisitedArticle, equalTo(actualVisitedArticle));
+        }
+
+        if (isCurrentPlatformMobile(platform)) {
+            mobileHomePage = new MobileHomePage((AppiumDriver) platformDriver);
+            mobileListsPage = new MobileListsPage((AppiumDriver) platformDriver);
+
+            String actualVisitedArticle = mobileHomePage.getFirstArticleTitle();
+
+            mobileHomePage.openFirstHomeArticle();
+            SleepHelper.sleepForSeconds(2);
+
+            mobileHomePage.pressBack();
+            mobileHomePage.goToListsPage();
+            mobileHomePage.refreshPage();
+
+            SleepHelper.sleepForSeconds(1);
+
+            mobileListsPage.clickRecentlyViewedArticleTab();
+
+            String recentlyVisitedArticle = mobileListsPage.getRecentlyViewedArticle();
+
+            mobileListsPage.refreshPage();
+            SleepHelper.sleepForSeconds(1);
+
+            assertThat(recentlyVisitedArticle, equalTo(actualVisitedArticle));
         }
     }
 }

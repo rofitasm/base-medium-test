@@ -17,9 +17,26 @@ public class MobileArticlePage extends MobilePageObject {
     private By ADD_TO_BOOKMARK_BUTTON = MobileBy.xpath("//android.widget.ImageView[@content-desc='Save']");
     private By CONFIRM_ADD_TO_BOOKMARK_BUTTON = MobileBy.id("com.medium.reader:id/btn_save_to");
     private By WRITER_PROFILE = MobileBy.AccessibilityId("View Author Profile");
+    private By COMMENT_ELLIPSIS_BUTTON = MobileBy.id("com.medium.reader:id/overflow_menu");
+    private By DELETE_COMMENT_BUTTON = MobileBy.xpath("//android.widget.TextView[@text='Delete']");
+    private By REPLY_COMMENT_BUTTON = MobileBy.id("com.medium.reader:id/reply_button");
 
     public MobileArticlePage(AppiumDriver appiumDriver) {
         super(appiumDriver);
+    }
+
+    public int getReplyCommentCount() {
+        return getMobileDriver().findElements(REPLY_COMMENT_BUTTON).size();
+    }
+
+    public void deleteComment() {
+        WebElement commentEllipsisButton = getElementAfterClickable(COMMENT_ELLIPSIS_BUTTON);
+        commentEllipsisButton.click();
+
+        WebElement deleteCommentButton = getElementAfterClickable(DELETE_COMMENT_BUTTON);
+        deleteCommentButton.click();
+
+        SleepHelper.sleepForSeconds(2);
     }
 
     public void createComment(String commentText) {

@@ -14,6 +14,8 @@ public class MobileListsPage extends MobilePageObject {
     private By SECOND_LIST_NAME = MobileBy.xpath("(//android.widget.TextView[@resource-id='com.medium.reader:id/tv_name'])[2]");
     private By LIST_ARTICLE_COUNT = MobileBy.id("com.medium.reader:id/tv_counters");
     private By READING_LIST_BUTTON = MobileBy.xpath("//android.widget.TextView[@text='Reading List']");
+    private By RECENTLY_VIEWED_TAB = MobileBy.AccessibilityId("Recently viewed");
+    private By RECENTLY_VIEWED_ARTICLE_TEXT = MobileBy.id("com.medium.reader:id/post_preview_title");
 
     public MobileListsPage(AppiumDriver appiumDriver) {
         super(appiumDriver);
@@ -30,6 +32,15 @@ public class MobileListsPage extends MobilePageObject {
         popupCreateNewListButton.click();
 
         SleepHelper.sleepForSeconds(2);
+    }
+
+    public void clickRecentlyViewedArticleTab() {
+        WebElement recentlyViewedTab = getElementAfterClickable(RECENTLY_VIEWED_TAB);
+        recentlyViewedTab.click();
+    }
+
+    public String getRecentlyViewedArticle() {
+        return getElementAfterVisible(RECENTLY_VIEWED_ARTICLE_TEXT).getText();
     }
 
     public String getSecondListName() {
