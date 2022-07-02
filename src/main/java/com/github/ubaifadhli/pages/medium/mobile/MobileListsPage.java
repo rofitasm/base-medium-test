@@ -46,9 +46,6 @@ public class MobileListsPage extends MobilePageObject {
     }
 
     public void clickSecondList() {
-        swipeUp();
-        SleepHelper.sleepForSeconds(1);
-
         WebElement secondListName = getElementAfterClickable(SECOND_LIST_NAME);
         secondListName.click();
     }

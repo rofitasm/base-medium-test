@@ -5,6 +5,7 @@ import com.github.ubaifadhli.util.DriverFactory;
 import com.github.ubaifadhli.util.PropertiesReader;
 import com.github.ubaifadhli.util.RandomGenerator;
 import io.appium.java_client.AppiumDriver;
+import io.github.bonigarcia.wdm.config.DriverManagerType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -42,7 +43,7 @@ public class TestRunner {
     @DataProvider(name = "drivers", parallel = true)
     public Object[][] getDataProvider() {
         return new Object[][]{
-//                new Object[]{"WEB", DriverFactory.createWebDriver(DriverManagerType.CHROME)},
+                new Object[]{"WEB", DriverFactory.createWebDriver(DriverManagerType.CHROME)},
                 new Object[]{"MOBILE", DriverFactory.createMobileDriver()},
         };
     }
@@ -324,6 +325,7 @@ public class TestRunner {
             mobileHomePage = new MobileHomePage((AppiumDriver) platformDriver);
             mobileMembershipPage = new MobileMembershipPage((AppiumDriver) platformDriver);
 
+            mobileHomePage.goToSettingsPage();
             mobileHomePage.goToMembershipPage();
 
             assertThat(mobileMembershipPage.getMonthlySubsPrice(), is(both(greaterThan(4.98)).and(lessThan(5.01))));
@@ -557,6 +559,8 @@ public class TestRunner {
             mobileListDetailPage.removeFirstArticleFromList();
 
             mobileHomePage.goToListsPage();
+
+            mobileHomePage.refreshPage();
 
             int currentArticleCount = mobileListsPage.getReadingListArticleCount();
 

@@ -11,7 +11,7 @@ import java.util.List;
 public class WebProfilePage extends WebPageObject {
     private By USER_ARTICLE_TITLE = By.xpath("//article//h1/a");
     private By EDIT_ARTICLE_BUTTON = By.xpath("//a[contains(@href, 'edit')]");
-    private By ARTICLE_ELLIPSIS = By.xpath("//button[@aria-controls='yourStoryActionsMenu']");
+    private By ARTICLE_ELLIPSIS = By.xpath("//button[@aria-controls='creatorActionOverflowMenu' or @aria-controls='yourStoryActionsMenu']");
     private By DELETE_ARTICLE_BUTTON = By.xpath("//div[@id='yourStoryActionsMenu']//button");
     private By CONFIRM_DELETE_ARTICLE_BUTTON = By.xpath("//button[text()='Delete']");
 

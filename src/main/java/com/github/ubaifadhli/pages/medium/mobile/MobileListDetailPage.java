@@ -31,6 +31,9 @@ public class MobileListDetailPage extends MobilePageObject {
         confirmDeleteListButton.click();
 
         SleepHelper.sleepForSeconds(2);
+
+        refreshPage();
+        SleepHelper.sleepForSeconds(1);
     }
 
     public void removeFirstArticleFromList() {

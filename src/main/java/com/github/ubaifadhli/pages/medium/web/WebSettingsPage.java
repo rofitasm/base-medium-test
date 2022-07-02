@@ -45,7 +45,7 @@ public class WebSettingsPage extends WebPageObject {
         WebElement editUsernameButton = getElementAfterClickable(EDIT_USERNAME_BUTTON);
         editUsernameButton.click();
 
-        WebElement editUsernameField = getElementAfterVisible(EDIT_USERNAME_BUTTON);
+        WebElement editUsernameField = getElementAfterVisible(EDIT_USERNAME_FIELD);
         editUsernameField.click();
         editUsernameField.clear();
         editUsernameField.sendKeys(newUsername);

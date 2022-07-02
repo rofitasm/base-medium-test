@@ -45,6 +45,6 @@ public class MobileCreateArticlePage extends MobilePageObject {
         WebElement publishArticleButton = getElementAfterClickable(PUBLISH_ARTICLE_BUTTON);
         publishArticleButton.click();
 
-        SleepHelper.sleepForSeconds(2);
+        SleepHelper.sleepForSeconds(4);
     }
 }

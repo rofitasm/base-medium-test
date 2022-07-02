@@ -61,7 +61,7 @@ public class MobilePageObject {
         int deviceMiddleX = getMobileDriver().manage().window().getSize().getWidth() / 2;
         int deviceMiddleY = getMobileDriver().manage().window().getSize().getHeight() / 2;
 
-        int deviceEndY = (int) (deviceMiddleY * 0.5);
+        int deviceEndY = 0;
 
         TouchAction touchAction = new TouchAction(getMobileDriver());
 

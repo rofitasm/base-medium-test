@@ -41,6 +41,8 @@ public class WebCreateArticlePage extends WebPageObject {
         publishArticleButton.click();
 
         SleepHelper.sleepForSeconds(2);
+
+        goToPublishedArticlePage();
     }
 
     public void goToPublishedArticlePage() {

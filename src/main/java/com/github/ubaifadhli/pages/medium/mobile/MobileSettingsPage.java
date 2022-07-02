@@ -11,7 +11,7 @@ import org.openqa.selenium.WebElement;
 public class MobileSettingsPage extends MobilePageObject {
     private By EDIT_BIO_BUTTON = MobileBy.xpath("(//android.widget.Button)[2]");
     private By EDIT_BIO_FIELD = MobileBy.xpath("//android.widget.EditText[@resource-id='editor_6']");
-    private By EDIT_USERNAME_BUTTON = MobileBy.xpath("//android.widget.Button");
+    private By EDIT_USERNAME_BUTTON = MobileBy.xpath("//android.widget.Button[preceding::android.view.View[@text='Username']]");
     private By EDIT_USERNAME_FIELD = MobileBy.xpath("//android.view.View[@text='Username']/following-sibling::*/android.widget.EditText");
     private By USERNAME_URL_TEXT = MobileBy.xpath("//android.view.View[@text='URL']/following-sibling::*");
     private By SAVE_USERNAME_BUTTON = MobileBy.xpath("//android.widget.Button[@text='Save']");
@@ -71,7 +71,7 @@ public class MobileSettingsPage extends MobilePageObject {
             SleepHelper.sleepForSeconds(1);
         }
 
-        WebElement editUsernameField = getElementAfterVisible(EDIT_USERNAME_BUTTON);
+        WebElement editUsernameField = getElementAfterVisible(EDIT_USERNAME_FIELD);
         editUsernameField.click();
         editUsernameField.sendKeys(newUsername);
 
