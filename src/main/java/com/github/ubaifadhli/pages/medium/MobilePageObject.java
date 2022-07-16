@@ -1,11 +1,14 @@
 package com.github.ubaifadhli.pages.medium;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.nativekey.AndroidKey;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 public class MobilePageObject {
@@ -33,5 +36,9 @@ public class MobilePageObject {
 
     public List<WebElement> getElementsAfterVisible(By locator) {
         return getWebDriverWait().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator));
+    }
+
+    public void pressEnter() {
+        ((AndroidDriver) getMobileDriver()).pressKey(new KeyEvent(AndroidKey.ENTER));
     }
 }
